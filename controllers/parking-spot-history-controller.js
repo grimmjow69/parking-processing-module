@@ -1,0 +1,1 @@
+exports.getParkingSpotHistroyById = async (req, res) => {};
