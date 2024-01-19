@@ -6,8 +6,8 @@ router.get("/profile/:id", userController.getUserProfileById);
 
 router.put("/update-profile", userController.updateUserProfile);
 
-router.post("/set-favorite-spot", userController.setFavoriteParkingSpot);
+router.post("/set-favorite-spot/:spotId", userController.setFavoriteParkingSpot);
 
-router.delete("/unregister", userController.unregisterUser);
+router.delete("/delete/:id", userController.deleteUser);
 
 module.exports = router;

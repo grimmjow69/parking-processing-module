@@ -16,7 +16,7 @@ class User {
     this.profilePhoto = profilePhoto;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.favouriteSpotId = favouriteSpotId || null;
+    this.favouriteSpotId = favouriteSpotId;
   }
 }
 
