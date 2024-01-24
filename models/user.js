@@ -1,6 +1,6 @@
 class User {
   constructor({
-    id,
+    userId,
     username,
     email,
     password,
@@ -9,7 +9,7 @@ class User {
     updatedAt,
     favouriteSpotId,
   }) {
-    this.userId = id;
+    this.userId = userId;
     this.username = username;
     this.email = email;
     this.password = password;
