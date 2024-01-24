@@ -35,9 +35,9 @@ class ParkingSpotService {
     const query = `
       UPDATE public."parking_spots"
       SET occupied = $1, updated_at = CURRENT_TIMESTAMP
-      WHERE parking_spot_id = $1
+      WHERE parking_spot_id = $2
     `;
-    const values = [occupied];
+    const values = [occupied, parkingSpotId];
 
     try {
       await this.db.query(query, values);

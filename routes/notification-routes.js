@@ -6,6 +6,6 @@ router.post("/subscribe", notificationController.subscribeToNotification);
 
 router.get("/user-notifications/:userId", notificationController.getUserNotifications);
 
-router.delete("/unsubscribe/:id", notificationController.unsubscribeFromNotification);
+router.delete("/unsubscribe/:notificationId", notificationController.unsubscribeFromNotification);
 
 module.exports = router;

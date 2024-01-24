@@ -6,9 +6,6 @@ class UserService {
   }
 
   async addUser(userDetail) {
-    if (this.userCredentialsTakenCheck(userDetail.username, userDetail.email)) {
-      throw new Error(`Email or username already taken: ${error.message}`);
-    }
     const query = `
         INSERT INTO public."users" (
           username, 

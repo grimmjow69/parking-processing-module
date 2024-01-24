@@ -5,7 +5,7 @@ class ParkingSpotHistoryService {
     this.db = db;
   }
 
-  async countAllSpotsOccupancy() {
+  async getHistoryOccupancyCount() {
     const query = `
       SELECT parking_spot_id, COUNT(*) AS times_occupied
       FROM public."parking_spot_histories"

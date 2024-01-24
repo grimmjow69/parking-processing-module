@@ -5,10 +5,12 @@ const parkingHistoryController = require("../controllers/parking-spot-history-co
 
 router.get("/all-spots", parkingController.getAllParkingSpots);
 
-router.get("/spot-by-id/:id", parkingController.getParkingSpotById);
+router.get("/spot-by-id/:spotId", parkingController.getParkingSpotById);
 
 router.get("/spot-by-name/:name", parkingController.getParkingSpotByName);
 
-router.get("/history/:id", parkingHistoryController.getParkingSpotHistroyById);
+router.get("/history/:spotId", parkingHistoryController.getParkingSpotHistoryById);
+
+router.get("/heatmap", parkingHistoryController.getAllParkingSpotsOccupancyCount);
 
 module.exports = router;
