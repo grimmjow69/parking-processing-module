@@ -30,7 +30,7 @@ class ParkingSpotHistoryService {
     const query = `
       SELECT history_id, parking_spot_id, occupied, occupied_since, updated_at
       FROM public."parking_spot_histories"
-      WHERE parking_spot_id = parkingSpotId´
+      WHERE parking_spot_id = parkingSpotId
       GROUP BY $1;
     `;
     
