@@ -6,8 +6,8 @@ router.get("/user-ratings/:userId", ratingController.getUserRatings);
 
 router.get("/spot-ratings/:spotId", ratingController.getSpotRatings);
 
-router.post("/add-rating:id", ratingController.addSpotRating);
+router.post("/add-rating/:spotId", ratingController.addSpotRating);
 
-router.delete("/delete-rating/:id", ratingController.deleteSpotRating);
+router.delete("/delete-rating/:ratingId", ratingController.deleteSpotRating);
 
 module.exports = router;
