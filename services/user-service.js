@@ -238,7 +238,7 @@ class UserService {
       FROM public."users"
       WHERE email = $1
     `;
-    const values = [username];
+    const values = [userEmail];
 
     const { rows } = await this.db.query(query, values);
     try {
