@@ -28,7 +28,7 @@ class ParkingSpotHistoryService {
 
   async getParkingSpotHistoryById(parkingSpotId) {
     const query = `
-      SELECT history_id, parking_spot_id, occupied, occupied_since
+      SELECT history_id, parking_spot_id, occupied, occupied_since, updated_at
       FROM public."parking_spot_histories"
       WHERE parking_spot_id = parkingSpotId´
       GROUP BY $1;
@@ -45,6 +45,7 @@ class ParkingSpotHistoryService {
           parkingSpotId: row.parking_spot_id,
           occupied: row.occupied,
           occupiedSince: row.occupied_since,
+          updatedAt: row.updated_at
         });
       } else {
         return null;
