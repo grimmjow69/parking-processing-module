@@ -1,6 +1,6 @@
 class Rating {
-  constructor({ id, userId, parkingSpotId, rating, comment, createdAt }) {
-    this.id = id;
+  constructor({ ratingId, userId, parkingSpotId, rating, comment, createdAt }) {
+    this.ratingId = ratingId;
     this.userId = userId;
     this.parkingSpotId = parkingSpotId;
     this.rating = rating;

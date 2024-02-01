@@ -28,7 +28,7 @@ class ParkingSpotHistoryService {
 
   async getParkingSpotHistoryById(parkingSpotId) {
     const query = `
-      SELECT id, parking_spot_id, occupied, occupied_since
+      SELECT history_id, parking_spot_id, occupied, occupied_since
       FROM public."parking_spot_histories"
       WHERE parking_spot_id = parkingSpotId´
       GROUP BY $1;
@@ -41,7 +41,7 @@ class ParkingSpotHistoryService {
       if (rows.length > 0) {
         const row = rows[0];
         return new ParkingSpotHistory({
-          id: row.id,
+          historyId: row.history_id,
           parkingSpotId: row.parking_spot_id,
           occupied: row.occupied,
           occupiedSince: row.occupied_since,

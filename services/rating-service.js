@@ -27,7 +27,7 @@ class RatingService {
   async deleteRatingById(ratingId) {
     const query = `
       DELETE FROM public."ratings"
-      WHERE id = $1;
+      WHERE rating_id = $1;
     `;
     const values = [ratingId];
 
@@ -41,7 +41,7 @@ class RatingService {
 
   async getAllUserRatingsByUserId(userId) {
     const query = `
-      SELECT id, user_id, parking_spot_id, rating, comment, created_at
+      SELECT rating_id, user_id, parking_spot_id, rating, comment, created_at
       FROM public."ratings"
       WHERE user_id = $1;
     `;
@@ -52,7 +52,7 @@ class RatingService {
       return rows.map(
         (row) =>
           new Rating({
-            id: row.id,
+            ratingId: row.rating_id,
             userId: row.userId,
             parkingSpotId: row.parking_spot_id,
             rating: row.rating,
@@ -69,7 +69,7 @@ class RatingService {
 
   async getAllParkingSpotRatingsByParkingSpotId(parkingSpotId) {
     const query = `
-      SELECT id, user_id, parking_spot_id, rating, comment, created_at
+      SELECT rating_id, user_id, parking_spot_id, rating, comment, created_at
       FROM public."ratings"
       WHERE user_id = $1;
     `;
@@ -80,7 +80,7 @@ class RatingService {
       return rows.map(
         (row) =>
           new Rating({
-            id: row.id,
+            ratingId: row.rating_id,
             userId: row.userId,
             parkingSpotId: row.parking_spot_id,
             rating: row.rating,

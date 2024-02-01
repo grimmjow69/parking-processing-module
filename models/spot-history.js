@@ -1,6 +1,6 @@
 class ParkingSpotHistory {
-  constructor({ id, parkingSpotId, occupied, occupiedSince }) {
-    this.id = id;
+  constructor({ historyId, parkingSpotId, occupied, occupiedSince }) {
+    this.historyId = historyId;
     this.parkingSpotId = parkingSpotId;
     this.occupied = occupied;
     this.occupiedSince = occupiedSince;
