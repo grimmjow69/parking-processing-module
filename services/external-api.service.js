@@ -1,6 +1,9 @@
 const axios = require("axios");
+const ParkingSpotService = require("../services/parking-spot-service");
+const db = require("../db-connection");
+const parkingSpotService = new ParkingSpotService(db);
 
-const { EXTERNAL_API_URL, EXTERNAL_API_KEY } = process.env;
+const { EXTERNAL_API_URL } = process.env;
 
 class ExternalApiService {
   constructor() {
@@ -8,14 +11,13 @@ class ExternalApiService {
       baseURL: EXTERNAL_API_URL,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${EXTERNAL_API_KEY}`,
       },
     });
   }
 
   async fetchUpdatedParkingSpots() {
     try {
-      const response = await this.apiClient.get("/parking-spots");
+      const response = await this.apiClient.get("/get_parking_occupancy");
       return response.data;
     } catch (error) {
       console.error(
@@ -26,24 +28,26 @@ class ExternalApiService {
   }
 
   async updateParkingLotsWithNewData() {
-    // try {
-    //   const newParkingSpotStates = await this.fetchUpdatedParkingSpots();
+    try {
+      const newParkingSpotStates = await this.fetchUpdatedParkingSpots();
 
-    //   for (const updatedParkingSpot of newParkingSpotStates) {
-    //     const parkingSpot = await parkingSpotService.getParkingSpotByName(
-    //       updatedParkingSpot.spotName
-    //     );
+      for (const spots of Object.values(newParkingSpotStates)) {
+        for (const spotData of spots) {
+          const parkingSpot = await parkingSpotService.getParkingSpotByName(
+            spotData.name
+          );
 
-    //     if (parkingSpot) {
-    //       await parkingSpotService.updateParkingSpotOccupancy(
-    //         parkingSpot.parkingSpotId,
-    //         updatedParkingSpot.occupied
-    //       );
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.error("Error while updating parking spots:", error.message);
-    // }
+          if (parkingSpot) {
+            await parkingSpotService.updateParkingSpotOccupancy(
+              parkingSpot.parkingSpotId,
+              spotData.occupied
+            );
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error while updating parking spots:", error.message);
+    }
   }
 }
 

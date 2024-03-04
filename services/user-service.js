@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
 
 class UserService {
   constructor(db) {
@@ -18,7 +19,7 @@ class UserService {
     const saltRounds = 7;
     const hashedPassword = await bcrypt.hash(userDetail.password, saltRounds);
 
-    const values = [userDetail.username, hashedPassword, userDetail.email];
+    const values = [userDetail.username, userDetail.email, hashedPassword];
 
     try {
       const { rows } = await this.db.query(query, values);
@@ -30,7 +31,7 @@ class UserService {
 
   async userCredentialsTakenCheck(username, email) {
     const query = `
-      SELECT user_id FROM public."user"
+      SELECT user_id FROM public."users"
       WHERE username = $1 OR email = $2;
     `;
     const values = [username, email];
@@ -46,7 +47,7 @@ class UserService {
   async deleteUser(userId) {
     // TO DO delete user notifications
     const query = `
-      DELETE FROM public."user"
+      DELETE FROM public."users"
       WHERE user_id = $1;
     `;
     const values = [userId];

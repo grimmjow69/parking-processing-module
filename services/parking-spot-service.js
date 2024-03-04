@@ -1,4 +1,7 @@
 const ParkingSpot = require("../models/parking-spot");
+const ParkingSpotHistoryService = require("../services/spot-history-service");
+const db = require("../db-connection");
+const parkingSpotHistoryService = new ParkingSpotHistoryService(db);
 
 class ParkingSpotService {
   constructor(db) {
@@ -41,7 +44,10 @@ class ParkingSpotService {
 
     try {
       await this.db.query(query, values);
-      // TO DO call parking spot history save and update
+      await parkingSpotHistoryService.updateParkingSpotHistory(
+        parkingSpotId,
+        occupied
+      );
       return true;
     } catch (error) {
       throw new Error(
@@ -78,8 +84,16 @@ class ParkingSpotService {
 
   async getAllParkingSpots() {
     const query = `
-      SELECT parking_spot_id, name, occupied, updated_at
-      FROM public."parking_spots"
+      SELECT
+      ps.parking_spot_id,
+      ps.name,
+      ps.occupied,
+      ps.updated_at,
+      (psc.coordinates)[0] AS longitude,
+      (psc.coordinates)[1] AS latitude
+    FROM public."parking_spots" ps
+    LEFT JOIN public."parking_spot_coordinates" psc
+      ON ps.parking_spot_id = psc.parking_spot_id
     `;
 
     try {
@@ -91,6 +105,8 @@ class ParkingSpotService {
             name: row.name,
             occupied: row.occupied,
             updatedAt: row.updated_at,
+            latitude: row.latitude,
+            longitude: row.longitude,
           })
       );
     } catch (error) {

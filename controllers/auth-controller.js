@@ -17,7 +17,11 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ error: "Username or email already taken" });
     }
 
-    const userId = await userService.addUser({ username, email, password });
+    const userId = await userService.addUser({
+      username: username,
+      email: email,
+      password: password,
+    });
 
     res.json({ userId });
   } catch (error) {
@@ -34,7 +38,7 @@ exports.verifyPassword = async (req, res) => {
     if (passwordVerified) {
       return res.status(200).json({ passwordVerified: true });
     } else {
-      return res.status(401).json({ error: "Password is incorrect" });
+      return res.status(401).json({ passwordVerified: false });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
