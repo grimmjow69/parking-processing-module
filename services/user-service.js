@@ -9,17 +9,16 @@ class UserService {
   async addUser(userDetail) {
     const query = `
         INSERT INTO public."users" (
-          username, 
           email, 
           password
-        ) VALUES ($1, $2, $3)
+        ) VALUES ($1, $2)
         RETURNING user_id;
     `;
 
     const saltRounds = 7;
     const hashedPassword = await bcrypt.hash(userDetail.password, saltRounds);
 
-    const values = [userDetail.username, userDetail.email, hashedPassword];
+    const values = [userDetail.email, hashedPassword];
 
     try {
       const { rows } = await this.db.query(query, values);
@@ -29,12 +28,12 @@ class UserService {
     }
   }
 
-  async userCredentialsTakenCheck(username, email) {
+  async userCredentialsTakenCheck(email) {
     const query = `
       SELECT user_id FROM public."users"
-      WHERE username = $1 OR email = $2;
+      WHERE email = $1;
     `;
-    const values = [username, email];
+    const values = [email];
 
     try {
       const { rows } = await this.db.query(query, values);
@@ -78,7 +77,7 @@ class UserService {
 
   async getAllUsersWithSameFavouriteSpot(favouriteSpotId) {
     const query = `
-      SELECT user_id, username, email, profile_photo, created_at, updated_at, favourite_spot_id
+      SELECT user_id, email, profile_photo, created_at, updated_at, favourite_spot_id
       FROM public."users"
       WHERE favourite_spot_id = $1
     `;
@@ -90,10 +89,8 @@ class UserService {
         (row) =>
           new User({
             userId: row.user_id,
-            username: row.username,
             email: row.email,
             password: null,
-            profilePhoto: row.profile_photo,
             createdAt: row.created_at,
             updatedAt: row.updated_at,
             favouriteSpotId: row.favourite_spot_id,
@@ -108,7 +105,7 @@ class UserService {
 
   async getAllUsers() {
     const query = `
-      SELECT user_id, username, email, profile_photo, created_at, updated_at, favourite_spot_id
+      SELECT user_id, email, profile_photo, created_at, updated_at, favourite_spot_id
       FROM public."users"
     `;
 
@@ -118,10 +115,8 @@ class UserService {
         (row) =>
           new User({
             userId: row.user_id,
-            username: row.username,
             email: row.email,
             password: null,
-            profilePhoto: row.profile_photo,
             createdAt: row.created_at,
             updatedAt: row.updated_at,
             favouriteSpotId: row.favourite_spot_id,
@@ -132,44 +127,10 @@ class UserService {
     }
   }
 
-  async getUserByUserName(username) {
-    const query = `
-      SELECT user_id, username, email, profile_photo, created_at, updated_at, favourite_spot_id
-      FROM public."users"
-      WHERE username = $1
-    `;
-    const values = [username];
-
-    const { rows } = await this.db.query(query, values);
-    try {
-      if (rows.length > 0) {
-        const row = rows[0];
-        return new User({
-          userId: row.user_id,
-          username: row.username,
-          email: row.email,
-          password: null,
-          profilePhoto: row.profile_photo,
-          createdAt: row.created_at,
-          updatedAt: row.updated_at,
-          favouriteSpotId: row.favourite_spot_id,
-        });
-      } else {
-        return null;
-      }
-    } catch (error) {
-      throw new Error(`Unable to retrieve user by user name: ${error.message}`);
-    }
-  }
-
   async updateUser(updateData) {
     const setClauses = [];
     const values = [];
 
-    if (updateData.username) {
-      setClauses.push(`username = $${setClauses.length + 1}`);
-      values.push(updateData.username);
-    }
     if (updateData.password) {
       // TODO pswd need to be rehashed
       setClauses.push(`password = $${setClauses.length + 1}`);
@@ -179,11 +140,6 @@ class UserService {
       setClauses.push(`email = $${setClauses.length + 1}`);
       values.push(updateData.email);
     }
-    if (updateData.profilePhoto) {
-      setClauses.push(`profile_photo = $${setClauses.length + 1}`);
-      values.push(updateData.profilePhoto);
-    }
-
     if (setClauses.length === 0) {
       throw new Error("No valid fields provided for update");
     }
@@ -206,7 +162,7 @@ class UserService {
 
   async getUserByUserId(userId) {
     const query = `
-      SELECT user_id, username, email, profile_photo, created_at, updated_at, favourite_spot_id
+      SELECT user_id, email, profile_photo, created_at, updated_at, favourite_spot_id
       FROM public."users"
       WHERE user_id = $1
     `;
@@ -217,10 +173,8 @@ class UserService {
         const row = rows[0];
         return new User({
           userId: row.user_id,
-          username: row.username,
           email: row.email,
           password: null,
-          profilePhoto: row.profile_photo,
           createdAt: row.created_at,
           updatedAt: row.updated_at,
           favouriteSpotId: row.favourite_spot_id,
@@ -235,7 +189,7 @@ class UserService {
 
   async getUserByEmail(userEmail) {
     const query = `
-      SELECT user_id, username, email, profile_photo, created_at, updated_at, favourite_spot_id
+      SELECT user_id, email, profile_photo, created_at, updated_at, favourite_spot_id
       FROM public."users"
       WHERE email = $1
     `;
@@ -247,10 +201,8 @@ class UserService {
         const row = rows[0];
         return new User({
           userId: row.user_id,
-          username: row.username,
           email: row.email,
           password: null,
-          profilePhoto: row.profile_photo,
           createdAt: row.created_at,
           updatedAt: row.updated_at,
           favouriteSpotId: row.favourite_spot_id,

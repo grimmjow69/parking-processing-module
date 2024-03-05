@@ -18,7 +18,6 @@ app.use("/auth", authRoutes);
 app.use("/notification", notificationRoutes);
 app.use("/parking", parkingSpotRoutes);
 app.use("/user", userRoutes);
-app.use("/rating", ratingRoutes);
 
 const externalApiService = new ExternalApiService();
 
@@ -26,11 +25,11 @@ app.listen(process.env.PORT, function () {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 
-cron.schedule("*/30 * * * *", async () => {
-  try {
-    await externalApiService.updateParkingLotsWithNewData();
-    console.log("Parking spots updated successfully.");
-  } catch (error) {
-    console.error("Error while updating parking spots:", error.message);
-  }
-});
+// cron.schedule("*/30 * * * *", async () => {
+//   try {
+//     await externalApiService.updateParkingLotsWithNewData();
+//     console.log("Parking spots updated successfully.");
+//   } catch (error) {
+//     console.error("Error while updating parking spots:", error.message);
+//   }
+// });
