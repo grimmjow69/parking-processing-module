@@ -38,10 +38,10 @@ class AuthService {
         const hashedDbPassword = rows[0].password;
         return await bcrypt.compare(password, hashedDbPassword);
       } else {
-        throw new Error(`User not found`);
+        throw new Error(`userNotFound`);
       }
     } catch (error) {
-      throw new Error(`Unable to retrieve user by user id: ${error.message}`);
+      throw new Error(`userNotFound}`);
     }
   }
 

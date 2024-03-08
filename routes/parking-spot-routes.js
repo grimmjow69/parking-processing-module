@@ -7,6 +7,8 @@ router.get("/all-spots", parkingController.getAllParkingSpots);
 
 router.get("/spot-by-id/:spotId", parkingController.getParkingSpotById);
 
+router.get("/spot-coordinates/:spotId", parkingController.getParkingSpotCoordinates);
+
 router.get("/spot-by-name/:name", parkingController.getParkingSpotByName);
 
 router.get("/history/:spotId", parkingHistoryController.getParkingSpotHistoryById);

@@ -77,7 +77,7 @@ class UserService {
 
   async getAllUsersWithSameFavouriteSpot(favouriteSpotId) {
     const query = `
-      SELECT user_id, email, profile_photo, created_at, updated_at, favourite_spot_id
+      SELECT user_id, email,  created_at, updated_at, favourite_spot_id
       FROM public."users"
       WHERE favourite_spot_id = $1
     `;
@@ -105,7 +105,7 @@ class UserService {
 
   async getAllUsers() {
     const query = `
-      SELECT user_id, email, profile_photo, created_at, updated_at, favourite_spot_id
+      SELECT user_id, email,  created_at, updated_at, favourite_spot_id
       FROM public."users"
     `;
 
@@ -162,7 +162,7 @@ class UserService {
 
   async getUserByUserId(userId) {
     const query = `
-      SELECT user_id, email, profile_photo, created_at, updated_at, favourite_spot_id
+      SELECT user_id, email,  created_at, updated_at, favourite_spot_id
       FROM public."users"
       WHERE user_id = $1
     `;
@@ -189,7 +189,7 @@ class UserService {
 
   async getUserByEmail(userEmail) {
     const query = `
-      SELECT user_id, email, profile_photo, created_at, updated_at, favourite_spot_id
+      SELECT user_id, email,  created_at, updated_at, favourite_spot_id
       FROM public."users"
       WHERE email = $1
     `;

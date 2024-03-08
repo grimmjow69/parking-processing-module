@@ -20,9 +20,7 @@ class ParkingSpotHistoryService {
     const now = new Date();
     if (lastRecord) {
       if (occupied) {
-        newOccupiedSince = lastRecord.occupied
-          ? lastRecord.occupiedSince
-          : now;
+        newOccupiedSince = lastRecord.occupied ? lastRecord.occupiedSince : now;
       } else {
         newOccupiedSince = null;
       }
@@ -59,7 +57,7 @@ class ParkingSpotHistoryService {
         ON p.parking_spot_id = c.parking_spot_id
       GROUP BY p.name, c.longitude, c.latitude
     `;
-  
+
     try {
       const { rows } = await this.db.query(query);
       const occupancyCountMap = {};
@@ -67,7 +65,7 @@ class ParkingSpotHistoryService {
         occupancyCountMap[row.name] = {
           timesOccupied: parseInt(row.times_occupied),
           longitude: row.longitude,
-          latitude: row.latitude
+          latitude: row.latitude,
         };
       });
       return occupancyCountMap;
@@ -114,8 +112,8 @@ class ParkingSpotHistoryService {
     const query = `
       SELECT history_id, parking_spot_id, occupied, occupied_since, updated_at
       FROM public."parking_spot_histories"
-      WHERE parking_spot_id = parkingSpotId
-      GROUP BY $1;
+      WHERE parking_spot_id = $1
+      ORDER BY updated_at desc
     `;
 
     const values = [parkingSpotId];
@@ -123,14 +121,11 @@ class ParkingSpotHistoryService {
     try {
       const { rows } = await this.db.query(query, values);
       if (rows.length > 0) {
-        const row = rows[0];
-        return new ParkingSpotHistory({
-          historyId: row.history_id,
-          parkingSpotId: row.parking_spot_id,
+        return rows.map((row) => ({
           occupied: row.occupied,
-          occupiedSince: row.occupied_since,
-          updatedAt: row.updated_at,
-        });
+          occupied_since: row.occupied_since,
+          updated_at: row.updated_at,
+        }));
       } else {
         return null;
       }

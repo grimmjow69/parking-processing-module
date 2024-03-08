@@ -11,7 +11,6 @@ const authRoutes = require("./routes/auth-routes");
 const notificationRoutes = require("./routes/notification-routes");
 const parkingSpotRoutes = require("./routes/parking-spot-routes");
 const userRoutes = require("./routes/user-routes");
-const ratingRoutes = require("./routes/rating-routes");
 const ExternalApiService = require("./services/external-api.service");
 
 app.use("/auth", authRoutes);

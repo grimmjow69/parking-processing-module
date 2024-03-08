@@ -13,6 +13,18 @@ exports.getAllParkingSpots = async (req, res) => {
   }
 };
 
+exports.getParkingSpotCoordinates = async (req, res) => {
+  const spotId = req.params.spotId;
+  console.log(spotId)
+  try {
+    const spotCoordinates =
+      await parkingSpotService.getParkingSpotCoordinatesById(spotId);
+    res.status(200).json(spotCoordinates);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.getParkingSpotById = async (req, res) => {
   const spotId = req.params.spotId;
   try {

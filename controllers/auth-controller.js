@@ -13,7 +13,7 @@ exports.registerUser = async (req, res) => {
       email
     );
     if (isCredentialsTaken) {
-      return res.status(400).json({ error: "Email already taken" });
+      return res.status(400).json({ error: "emailAlreadyTaken" });
     }
 
     const userId = await userService.addUser({
@@ -27,15 +27,17 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  const passwordVerified = await authService.verifyPasswordWithEmail(email, password);
-
   try {
+    const passwordVerified = await authService.verifyPasswordWithEmail(
+      email,
+      password
+    );
     if (passwordVerified) {
-      return res.status(200).json({ loginSuccessfull: true });
+      const userData = await userService.getUserByEmail(email);
+      return res.status(200).json({ loginSuccessfull: true, user: userData });
     } else {
       return res.status(401).json({ loginSuccessfull: false });
     }
@@ -47,7 +49,10 @@ exports.loginUser = async (req, res) => {
 exports.verifyPassword = async (req, res) => {
   const { userId, password } = req.body;
 
-  const passwordVerified = await authService.verifyPasswordWithUserId(userId, password);
+  const passwordVerified = await authService.verifyPasswordWithUserId(
+    userId,
+    password
+  );
 
   try {
     if (passwordVerified) {
@@ -60,7 +65,4 @@ exports.verifyPassword = async (req, res) => {
   }
 };
 
-exports.loginUser = async (req, res) => {
-  const { email, password } = req.body;
-};
 exports.logoutUser = async (req, res) => {};
