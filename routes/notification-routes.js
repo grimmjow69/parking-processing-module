@@ -8,4 +8,8 @@ router.get("/user-notifications/:userId", notificationController.getUserNotifica
 
 router.delete("/unsubscribe/:notificationId", notificationController.unsubscribeFromNotification);
 
+router.post("/register-push-token", notificationController.registerPushToken);
+
+router.post("/delete-push-token", notificationController.deletePushToken);
+
 module.exports = router;

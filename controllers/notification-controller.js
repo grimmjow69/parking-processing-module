@@ -3,6 +3,29 @@ const db = require("../db-connection");
 
 const notificationService = new NotificationService(db);
 
+exports.registerPushToken = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const pushToken = req.body.token;
+    const result = await notificationService.savePushToken(userId, pushToken);
+    console.log(result);
+    res.status(200).json({ success: result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.deletePushToken = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const result = await notificationService.deletePushToken(userId);
+    console.log(result);
+    res.status(200).json({ success: result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.subscribeToNotification = async (req, res) => {
   try {
     const { parkingSpotId, userId } = req.body;

@@ -105,23 +105,21 @@ class UserService {
 
   async getAllUsers() {
     const query = `
-      SELECT user_id, email,  created_at, updated_at, favourite_spot_id
+      SELECT user_id, email,  created_at, updated_at, favourite_spot_id, push_token
       FROM public."users"
     `;
 
     try {
       const { rows } = await this.db.query(query);
-      return rows.map(
-        (row) =>
-          new User({
-            userId: row.user_id,
-            email: row.email,
-            password: null,
-            createdAt: row.created_at,
-            updatedAt: row.updated_at,
-            favouriteSpotId: row.favourite_spot_id,
-          })
-      );
+      return rows.map((row) => ({
+        userId: row.user_id,
+        email: row.email,
+        password: null,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+        favouriteSpotId: row.favourite_spot_id,
+        pushToken: row.push_token,
+      }));
     } catch (error) {
       throw new Error(`Unable to retrieve all users: ${error.message}`);
     }

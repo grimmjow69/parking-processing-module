@@ -2,6 +2,8 @@ const axios = require("axios");
 const ParkingSpotService = require("../services/parking-spot-service");
 const db = require("../db-connection");
 const parkingSpotService = new ParkingSpotService(db);
+const NotificationService = require("../services/notification-service");
+const notificationService = new NotificationService(db);
 
 const { EXTERNAL_API_URL } = process.env;
 
@@ -45,6 +47,7 @@ class ExternalApiService {
           }
         }
       }
+      notificationService.sendPushNotification();
     } catch (error) {
       console.error("Error while updating parking spots:", error.message);
     }

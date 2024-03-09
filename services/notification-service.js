@@ -1,8 +1,80 @@
 const Notification = require("../models/notification");
+const UserService = require("../services/user-service");
+
+const db = require("../db-connection");
+const userService = new UserService(db);
+
+const { Expo } = require("expo-server-sdk");
+let expo = new Expo();
 
 class NotificationService {
   constructor(db) {
     this.db = db;
+  }
+
+  async savePushToken(userId, pushToken) {
+    const query = `
+      UPDATE public."users" SET push_token = $1
+      WHERE user_id = $2;
+    `;
+
+    const values = [pushToken, userId];
+
+    try {
+      await this.db.query(query, values);
+      console.log(`Deleteing push token of user with id: ${userId}`);
+      return true;
+    } catch (error) {
+      throw new Error(`Unable to save push token: ${error.message}`);
+    }
+  }
+
+  async deletePushToken(userId) {
+    const query = `
+      UPDATE public."users" SET push_token = null
+      WHERE user_id = $1;
+    `;
+
+    const values = [userId];
+
+    try {
+      await this.db.query(query, values);
+      console.log(`Adding push token for user with id: ${userId}`);
+      return true;
+    } catch (error) {
+      throw new Error(`Unable to delete push token: ${error.message}`);
+    }
+  }
+
+  async sendPushNotification() {
+    let messages = [];
+
+    const users = await userService.getAllUsers();
+
+    for (let user of users) {
+      if (!Expo.isExpoPushToken(user.pushToken)) {
+        continue;
+      }
+
+      messages.push({
+        to: user.pushToken,
+        sound: "default",
+        body: "body",
+        data: { withSome: "data" },
+      });
+    }
+
+    let chunks = expo.chunkPushNotifications(messages);
+    let tickets = [];
+    for (let chunk of chunks) {
+      try {
+        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        tickets.push(...ticketChunk);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    return tickets;
   }
 
   async addNotification(parkingSpotId, userId) {
