@@ -2,10 +2,34 @@ const ParkingSpot = require("../models/parking-spot");
 const ParkingSpotHistoryService = require("../services/spot-history-service");
 const db = require("../db-connection");
 const parkingSpotHistoryService = new ParkingSpotHistoryService(db);
+const geolib = require("geolib");
 
 class ParkingSpotService {
   constructor(db) {
     this.db = db;
+  }
+
+  async getClosestFreeParkingSpot(startLatitude, startLongitude) {
+    try {
+      const parkingSpots = await this.getAllFreeParkingSpots();
+
+      const closestSpot = geolib.findNearest(
+        { latitude: startLatitude, longitude: startLongitude },
+        parkingSpots.map((spot) => ({
+          latitude: spot.latitude,
+          longitude: spot.longitude,
+          key: spot.parkingSpotId,
+        }))
+      );
+
+      const closestParkingSpot = await this.getParkingSpotById(closestSpot.key);
+
+      return closestParkingSpot;
+    } catch (error) {
+      throw new Error(
+        `Unable to find closest free parking spot: ${error.message}`
+      );
+    }
   }
 
   async getParkingSpotCoordinatesById(spotId) {
@@ -41,9 +65,17 @@ class ParkingSpotService {
 
   async getParkingSpotById(spotId) {
     const query = `
-      SELECT parking_spot_id, name, occupied, updated_at
-      FROM public."parking_spots"
-      WHERE parking_spot_id = $1;
+      SELECT
+        ps.parking_spot_id,
+        ps.name,
+        ps.occupied,
+        ps.updated_at,
+        (psc.coordinates)[0] AS longitude,
+        (psc.coordinates)[1] AS latitude
+      FROM public."parking_spots" ps
+      LEFT JOIN public."parking_spot_coordinates" psc
+        ON ps.parking_spot_id = psc.parking_spot_id
+      WHERE ps.parking_spot_id = $1;
     `;
     const values = [spotId];
 
@@ -56,6 +88,8 @@ class ParkingSpotService {
           name: row.name,
           occupied: row.occupied,
           updatedAt: row.updated_at,
+          longitude: row.longitude,
+          latitude: row.latitude,
         };
       } else {
         return null;
@@ -83,6 +117,40 @@ class ParkingSpotService {
     } catch (error) {
       throw new Error(
         `Unable to update parking spot occupancy: ${error.message}`
+      );
+    }
+  }
+
+  async getUserFavouriteSpot(userId) {
+    const query = `
+      SELECT
+        ps.parking_spot_id,
+        (psc.coordinates)[0] AS longitude,
+        (psc.coordinates)[1] AS latitude
+      FROM public."users" u
+      LEFT JOIN public."parking_spots" ps
+        ON u.favourite_spot_id = ps.parking_spot_id
+      LEFT JOIN public."parking_spot_coordinates" psc
+        ON ps.parking_spot_id = psc.parking_spot_id
+      WHERE u.user_id = $1
+    `;
+    const values = [userId];
+
+    try {
+      const { rows } = await this.db.query(query, values);
+      if (rows.length > 0) {
+        const row = rows[0];
+        if (row.parking_spot_id !== null) {
+          const favouriteSpot = await this.getParkingSpotById(
+            row.parking_spot_id
+          );
+          return favouriteSpot;
+        }
+      }
+      return null;
+    } catch (error) {
+      throw new Error(
+        `Unable to retrieve user's favourite parking spot: ${error.message}`
       );
     }
   }
@@ -142,6 +210,35 @@ class ParkingSpotService {
       );
     } catch (error) {
       throw new Error(`Unable to retrieve all parking spots: ${error.message}`);
+    }
+  }
+
+  async getAllFreeParkingSpots() {
+    const query = `
+      SELECT
+      ps.parking_spot_id,
+      ps.name,
+      ps.occupied,
+      ps.updated_at,
+      (psc.coordinates)[0] AS longitude,
+      (psc.coordinates)[1] AS latitude
+    FROM public."parking_spots" ps
+    LEFT JOIN public."parking_spot_coordinates" psc
+      ON ps.parking_spot_id = psc.parking_spot_id
+    WHERE ps.occupied = false
+    `;
+
+    try {
+      const { rows } = await this.db.query(query);
+      return rows.map((row) => ({
+        parkingSpotId: row.parking_spot_id,
+        latitude: row.latitude,
+        longitude: row.longitude,
+      }));
+    } catch (error) {
+      throw new Error(
+        `Unable to retrieve all free parking spots: ${error.message}`
+      );
     }
   }
 }

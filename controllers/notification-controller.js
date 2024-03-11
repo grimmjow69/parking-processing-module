@@ -8,7 +8,6 @@ exports.registerPushToken = async (req, res) => {
     const userId = req.body.userId;
     const pushToken = req.body.token;
     const result = await notificationService.savePushToken(userId, pushToken);
-    console.log(result);
     res.status(200).json({ success: result });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -19,7 +18,6 @@ exports.deletePushToken = async (req, res) => {
   try {
     const userId = req.body.userId;
     const result = await notificationService.deletePushToken(userId);
-    console.log(result);
     res.status(200).json({ success: result });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -33,7 +31,6 @@ exports.subscribeToNotification = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Subscribed to notification successfully",
     });
   } catch (error) {
     console.error("Error subscribing to notification:", error.message);
@@ -62,7 +59,6 @@ exports.unsubscribeFromNotification = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Unsubscribed from notification successfully",
     });
   } catch (error) {
     console.error("Error unsubscribing from notifications:", error.message);

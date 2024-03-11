@@ -17,4 +17,8 @@ router.get("/heatmap", parkingHistoryController.getAllParkingSpotsOccupancyCount
 
 router.post("/spot-detail-by-id", parkingController.getSpotDetailById);
 
+router.post("/find-closest-free-spot", parkingController.getClosestFreeParkingSpot);
+
+router.get("/favourite-spot/:userId", parkingController.getUserFavouriteParkingSpot);
+
 module.exports = router;
