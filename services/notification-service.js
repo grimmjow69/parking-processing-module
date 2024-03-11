@@ -1,4 +1,3 @@
-const Notification = require("../models/notification");
 const UserService = require("../services/user-service");
 const ParkingSpotService = require("../services/parking-spot-service");
 

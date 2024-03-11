@@ -1,4 +1,3 @@
-const ParkingSpot = require("../models/parking-spot");
 const ParkingSpotHistoryService = require("../services/spot-history-service");
 const db = require("../db-connection");
 const parkingSpotHistoryService = new ParkingSpotHistoryService(db);

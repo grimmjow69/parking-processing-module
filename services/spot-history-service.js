@@ -1,5 +1,3 @@
-const ParkingSpotHistory = require("../models/spot-history");
-
 class ParkingSpotHistoryService {
   constructor(db) {
     this.db = db;

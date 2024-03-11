@@ -13,7 +13,7 @@ const notificationService = new NotificationService(db);
 exports.getClosestFreeParkingSpot = async (req, res) => {
   const { latitude, longitude } = req.body;
 
-  console.log(latitude, longitude)
+  console.log(latitude, longitude);
   try {
     const closestSpot = await parkingSpotService.getClosestFreeParkingSpot(
       latitude,
@@ -33,9 +33,7 @@ exports.getClosestFreeParkingSpot = async (req, res) => {
 exports.getUserFavouriteParkingSpot = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const favouriteSpot = await parkingSpotService.getUserFavouriteSpot(
-      userId
-    );
+    const favouriteSpot = await parkingSpotService.getUserFavouriteSpot(userId);
 
     if (favouriteSpot) {
       res.status(200).json({ favouriteSpot: favouriteSpot });
@@ -50,7 +48,6 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 exports.getAllParkingSpots = async (req, res) => {
   try {

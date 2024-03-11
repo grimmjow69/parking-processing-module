@@ -16,7 +16,6 @@ exports.getParkingSpotHistoryById = async (req, res) => {
 };
 
 exports.getAllParkingSpotsOccupancyCount = async (req, res) => {
-  // return how many times each parking spot was occupied (take all records from history table)
   try {
     const parkingSpotsOccupancyCount =
       await parkingSpotHistoryService.getHistoryOccupancyCount();

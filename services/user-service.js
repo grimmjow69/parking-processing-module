@@ -1,4 +1,3 @@
-const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 
 class UserService {
@@ -85,17 +84,14 @@ class UserService {
     const values = [favouriteSpotId];
     try {
       const { rows } = await this.db.query(query, values);
-      return rows.map(
-        (row) =>
-          new User({
-            userId: row.user_id,
-            email: row.email,
-            password: null,
-            createdAt: row.created_at,
-            updatedAt: row.updated_at,
-            favouriteSpotId: row.favourite_spot_id,
-          })
-      );
+      return rows.map((row) => ({
+        userId: row.user_id,
+        email: row.email,
+        password: null,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+        favouriteSpotId: row.favourite_spot_id,
+      }));
     } catch (error) {
       throw new Error(
         `Unable to retrieve all users with same favourite spot: ${error.message}`

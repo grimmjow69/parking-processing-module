@@ -44,11 +44,6 @@ class AuthService {
       throw new Error(`userNotFound}`);
     }
   }
-
-  async logoutUser() {
-    // TO DO
-    return null;
-  }
 }
 
 module.exports = AuthService;

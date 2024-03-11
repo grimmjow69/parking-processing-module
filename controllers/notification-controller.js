@@ -40,7 +40,7 @@ exports.subscribeToNotification = async (req, res) => {
 
 exports.getUserNotifications = async (req, res) => {
   try {
-    const userId = req.params.userId; 
+    const userId = req.params.userId;
     const userNotifications = await notificationService.getAllUserNotifications(
       userId
     );
