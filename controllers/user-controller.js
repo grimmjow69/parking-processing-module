@@ -12,11 +12,12 @@ exports.getUserProfileById = async (req, res) => {
     if (user) {
       res.status(200).json({ user });
     } else {
+      console.log(`User: ${userId} not found`);
       res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
-    console.error("Error getting user profile:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(`Error getting user profile: ${userId} - ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -29,15 +30,14 @@ exports.updateUserProfile = async (req, res) => {
 
     if (existingUser) {
       await userService.updateUser(updateData);
-      res
-        .status(200)
-        .json({ success: true, message: "User profile updated successfully" });
+      res.status(200);
     } else {
+      console.log(`User: ${userId} not found`);
       res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
-    console.error("Error updating user profile:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(`Error updating user profile: ${userId} - ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -46,13 +46,15 @@ exports.setFavouriteParkingSpot = async (req, res) => {
     const { userId, spotId } = req.body;
 
     await userService.updateFavouriteSpot(userId, spotId);
-    res.status(200).json({
-      success: true,
-      message: "Favourite parking spot set successfully",
-    });
+    console.log(
+      `User: ${userId} favourite parking spot: ${spotId} set successfully`
+    );
+    res.status(201);
   } catch (error) {
-    console.error("Error setting favourite parking spot:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(
+      `Error setting favourite parking spot: ${spotId} of user: ${userId} - ${error.message}`
+    );
+    res.status(500);
   }
 };
 
@@ -62,14 +64,14 @@ exports.deleteUser = async (req, res) => {
     const deleted = await userService.deleteUser(userId);
 
     if (deleted) {
-      res
-        .status(200)
-        .json({ success: true, message: "User deleted successfully" });
+      console.log(`User: ${userId} deleted successfuly`);
+      res.status(200);
     } else {
-      res.status(404).json({ error: "User not found" });
+      console.log(`User: ${userId} not found`);
+      res.status(404);
     }
   } catch (error) {
-    console.error("Error deleting user:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(`Error while deleting user: ${userId} - ${error.message}`);
+    res.status(500);
   }
 };

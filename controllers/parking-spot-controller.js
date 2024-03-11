@@ -21,12 +21,13 @@ exports.getClosestFreeParkingSpot = async (req, res) => {
     );
 
     if (closestSpot) {
-      res.json(closestSpot);
+      res.status(200).json(closestSpot);
     } else {
       res.status(404).json({ error: "No free parking spot found" });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Error while finding closest spot: ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -42,10 +43,9 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      "Error getting user's favourite parking spot:",
-      error.message
+      `Error getting user's favourite parking spot: ${error.message}`
     );
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500);
   }
 };
 
@@ -54,7 +54,8 @@ exports.getAllParkingSpots = async (req, res) => {
     const parkingSpots = await parkingSpotService.getAllParkingSpots();
     res.status(200).json(parkingSpots);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Error while getting all parking spots: ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -63,7 +64,8 @@ exports.getAllFreeParkingSpots = async (req, res) => {
     const freeParkingSpots = await parkingSpotService.getAllFreeParkingSpots();
     res.status(200).json(freeParkingSpots);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Error while getting all free spot: ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -74,7 +76,10 @@ exports.getParkingSpotCoordinates = async (req, res) => {
       await parkingSpotService.getParkingSpotCoordinatesById(spotId);
     res.status(200).json(spotCoordinates);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(
+      `Error while geting coordinates of spot ${spotId} - ${error.message}`
+    );
+    res.status(500);
   }
 };
 
@@ -88,7 +93,10 @@ exports.getParkingSpotById = async (req, res) => {
       res.status(404).json({ error: "Parking spot not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(
+      `Error while geting parking spoty by id ${spotId} - ${error.message}`
+    );
+    res.status(500);
   }
 };
 
@@ -102,7 +110,10 @@ exports.getParkingSpotByName = async (req, res) => {
       res.status(404).json({ error: "Parking spot not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(
+      `Error getting detail of spot: ${spotId} error: ${error.message}`
+    );
+    res.status(500);
   }
 };
 
@@ -147,7 +158,9 @@ exports.getSpotDetailById = async (req, res) => {
     }
     res.status(200).json({ data: result });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
+    console.error(
+      `Error getting detail of spot: ${spotId} error: ${error.message}`
+    );
+    res.status(500);
   }
 };

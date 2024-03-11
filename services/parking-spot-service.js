@@ -194,7 +194,7 @@ class ParkingSpotService {
       const { rows } = await this.db.query(query, values);
       if (rows.length > 0) {
         const row = rows[0];
-        return new ParkingSpot({
+        return ({
           parkingSpotId: row.parking_spot_id,
           name: row.name,
           occupied: row.occupied,
@@ -225,8 +225,7 @@ class ParkingSpotService {
     try {
       const { rows } = await this.db.query(query);
       return rows.map(
-        (row) =>
-          new ParkingSpot({
+        (row) =>({
             parkingSpotId: row.parking_spot_id,
             name: row.name,
             occupied: row.occupied,

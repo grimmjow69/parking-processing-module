@@ -89,13 +89,13 @@ class ParkingSpotHistoryService {
       const { rows } = await this.db.query(query, values);
       if (rows.length > 0) {
         const row = rows[0];
-        return new ParkingSpotHistory({
+        return {
           historyId: row.history_id,
           parkingSpotId: row.parking_spot_id,
           occupied: row.occupied,
           occupiedSince: row.occupied_since,
           updatedAt: row.updated_at,
-        });
+        };
       } else {
         return null;
       }

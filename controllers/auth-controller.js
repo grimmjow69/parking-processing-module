@@ -13,6 +13,7 @@ exports.registerUser = async (req, res) => {
       email
     );
     if (isCredentialsTaken) {
+      console.log("User credentials (email) already taken");
       return res.status(400).json({ error: "emailAlreadyTaken" });
     }
 
@@ -21,9 +22,11 @@ exports.registerUser = async (req, res) => {
       password: password,
     });
 
-    res.json({ userId });
+    console.log("Registration - SUCCESS");
+    res.status(201).json({ userId });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Error while user registration: ${error}`);
+    res.status(500);
   }
 };
 
@@ -37,12 +40,15 @@ exports.loginUser = async (req, res) => {
     );
     if (passwordVerified) {
       const userData = await userService.getUserByEmail(email);
+      console.log(`Login - SUCCESS`);
       return res.status(200).json({ loginSuccessfull: true, user: userData });
     } else {
+      console.log(`Login - FAILED`);
       return res.status(401).json({ loginSuccessfull: false });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Error while user login: ${error}`);
+    res.status(500);
   }
 };
 
@@ -56,12 +62,15 @@ exports.verifyPassword = async (req, res) => {
 
   try {
     if (passwordVerified) {
+      console.log(`Verify of user ${userId} - SUCCESS`);
       return res.status(200).json({ passwordVerified: true });
     } else {
+      console.log(`Verify of user ${userId} - FAILED`);
       return res.status(401).json({ passwordVerified: false });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Error while verifing password: ${error}`);
+    res.status(500);
   }
 };
 

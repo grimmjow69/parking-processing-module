@@ -23,7 +23,6 @@ class NotificationService {
 
     try {
       await this.db.query(query, values);
-      console.log(`Deleteing push token of user with id: ${userId}`);
       return true;
     } catch (error) {
       throw new Error(`Unable to save push token: ${error.message}`);
@@ -40,7 +39,6 @@ class NotificationService {
 
     try {
       await this.db.query(query, values);
-      console.log(`Adding push token for user with id: ${userId}`);
       return true;
     } catch (error) {
       throw new Error(`Unable to delete push token: ${error.message}`);
@@ -48,7 +46,6 @@ class NotificationService {
   }
 
   async sendPushNotification() {
-    console.log("notifications started");
     let messages = [];
     const users = await userService.getAllUsers();
 

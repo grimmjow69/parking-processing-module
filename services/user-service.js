@@ -165,7 +165,7 @@ class UserService {
     try {
       if (rows.length > 0) {
         const row = rows[0];
-        return new User({
+        return ({
           userId: row.user_id,
           email: row.email,
           password: null,
@@ -193,7 +193,7 @@ class UserService {
     try {
       if (rows.length > 0) {
         const row = rows[0];
-        return new User({
+        return ({
           userId: row.user_id,
           email: row.email,
           password: null,

@@ -8,9 +8,11 @@ exports.registerPushToken = async (req, res) => {
     const userId = req.body.userId;
     const pushToken = req.body.token;
     const result = await notificationService.savePushToken(userId, pushToken);
-    res.status(200).json({ success: result });
+    console.log(`Sucefuly register push token of user: ${userId}`);
+    res.status(200);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Error while registering push token: ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -18,9 +20,11 @@ exports.deletePushToken = async (req, res) => {
   try {
     const userId = req.body.userId;
     const result = await notificationService.deletePushToken(userId);
-    res.status(200).json({ success: result });
+    console.log(`Sucefuly deleted push token of user: ${userId}`);
+    res.status(200);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(`Error while deleting push token: ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -29,12 +33,13 @@ exports.subscribeToNotification = async (req, res) => {
     const { parkingSpotId, userId } = req.body;
     await notificationService.addNotification(parkingSpotId, userId);
 
-    res.status(201).json({
-      success: true,
-    });
+    console.log(
+      `User: ${userId} succesfuly subscribed for notification of parking spot with id: ${parkingSpotId}`
+    );
+    res.status(201);
   } catch (error) {
-    console.error("Error subscribing to notification:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(`Error subscribing to notification: ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -45,10 +50,11 @@ exports.getUserNotifications = async (req, res) => {
       userId
     );
 
-    res.status(200).json({ notifications: userNotifications });
+    console.log(`Succesfuly got user notifications, user: ${userId}`);
+    res.status(200);
   } catch (error) {
-    console.error("Error getting user notifications:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(`Error getting user notifications: ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -57,12 +63,13 @@ exports.unsubscribeFromNotificationByNotificationId = async (req, res) => {
     const notificationId = req.params.notificationId;
     await notificationService.deleteNotificationById(notificationId);
 
-    res.status(200).json({
-      success: true,
-    });
+    console.log(
+      `Succesfuly unsubscribed from notification id: ${notificationId}`
+    );
+    res.status(200);
   } catch (error) {
-    console.error("Error unsubscribing from notifications:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(`Error unsubscribing from notifications: ${error.message}`);
+    res.status(500);
   }
 };
 
@@ -76,12 +83,12 @@ exports.unsubscribeFromNotificationByUserAndParkingSpotId = async (
       userId,
       parkingSpotId
     );
-
-    res.status(200).json({
-      success: true,
-    });
+    console.log(
+      `User: ${userId} succesfuly unsubscribed from notification of parking spot with id: ${parkingSpotId}`
+    );
+    res.status(200);
   } catch (error) {
-    console.error("Error unsubscribing from notifications:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(`Error unsubscribing from notifications: ${error.message}`);
+    res.status(500);
   }
 };
