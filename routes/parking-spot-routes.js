@@ -15,4 +15,6 @@ router.get("/history/:spotId", parkingHistoryController.getParkingSpotHistoryByI
 
 router.get("/heatmap", parkingHistoryController.getAllParkingSpotsOccupancyCount);
 
+router.post("/spot-detail-by-id", parkingController.getSpotDetailById);
+
 module.exports = router;

@@ -24,11 +24,11 @@ app.listen(process.env.PORT, function () {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 
-cron.schedule("*/2 * * * *", async () => {
-  try {
-    await externalApiService.updateParkingLotsWithNewData();
-    console.log("Parking spots updated successfully.");
-  } catch (error) {
-    console.error("Error while updating parking spots:", error.message);
-  }
-});
+// cron.schedule("*/2 * * * *", async () => {
+//   try {
+//     await externalApiService.updateParkingLotsWithNewData();
+//     console.log("Parking spots updated successfully.");
+//   } catch (error) {
+//     console.error("Error while updating parking spots:", error.message);
+//   }
+// });

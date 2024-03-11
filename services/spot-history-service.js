@@ -123,8 +123,8 @@ class ParkingSpotHistoryService {
       if (rows.length > 0) {
         return rows.map((row) => ({
           occupied: row.occupied,
-          occupied_since: row.occupied_since,
-          updated_at: row.updated_at,
+          occupiedSince: row.occupied_since,
+          updatedAt: row.updated_at,
         }));
       } else {
         return null;
