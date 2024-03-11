@@ -6,7 +6,7 @@ router.get("/profile/:userId", userController.getUserProfileById);
 
 router.put("/update-profile", userController.updateUserProfile);
 
-router.post("/set-favorite-spot/:spotId", userController.setFavoriteParkingSpot);
+router.put("/update-favourite-spot", userController.setFavouriteParkingSpot);
 
 router.delete("/delete/:userId", userController.deleteUser);
 

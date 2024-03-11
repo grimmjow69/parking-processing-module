@@ -151,6 +151,31 @@ class NotificationService {
       );
     }
   }
+
+  async deleteNotificationByUserAndParkingSpot(userId, parkingSpotId) {
+    const query = `
+      DELETE FROM public."notifications"
+      WHERE user_id = $1 AND parking_spot_id = $2;
+    `;
+    const values = [userId, parkingSpotId];
+
+    try {
+      const result = await this.db.query(query, values);
+      if (result.rowCount > 0) {
+        console.log(
+          `Deleted notification for user with ID: ${userId} and parking spot ID: ${parkingSpotId}`
+        );
+        return true;
+      } else {
+        console.log(
+          `No notification found for user with ID: ${userId} and parking spot ID: ${parkingSpotId}`
+        );
+        return false;
+      }
+    } catch (error) {
+      throw new Error(`Unable to delete notification: ${error.message}`);
+    }
+  }
 }
 
 module.exports = NotificationService;

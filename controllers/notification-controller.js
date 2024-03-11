@@ -40,7 +40,7 @@ exports.subscribeToNotification = async (req, res) => {
 
 exports.getUserNotifications = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.params.userId; 
     const userNotifications = await notificationService.getAllUserNotifications(
       userId
     );
@@ -52,10 +52,30 @@ exports.getUserNotifications = async (req, res) => {
   }
 };
 
-exports.unsubscribeFromNotification = async (req, res) => {
+exports.unsubscribeFromNotificationByNotificationId = async (req, res) => {
   try {
     const notificationId = req.params.notificationId;
     await notificationService.deleteNotificationById(notificationId);
+
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error unsubscribing from notifications:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.unsubscribeFromNotificationByUserAndParkingSpotId = async (
+  req,
+  res
+) => {
+  try {
+    const { userId, parkingSpotId } = req.body;
+    await notificationService.deleteNotificationByUserAndParkingSpot(
+      userId,
+      parkingSpotId
+    );
 
     res.status(200).json({
       success: true,
