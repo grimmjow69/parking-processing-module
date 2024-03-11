@@ -31,6 +31,7 @@ class ExternalApiService {
 
   async updateParkingLotsWithNewData() {
     try {
+      
       const newParkingSpotStates = await this.fetchUpdatedParkingSpots();
 
       for (const spots of Object.values(newParkingSpotStates)) {

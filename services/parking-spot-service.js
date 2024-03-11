@@ -63,6 +63,34 @@ class ParkingSpotService {
     }
   }
 
+  async getParkingSpotStateById(spotId) {
+    const query = `
+    SELECT
+      name,
+      occupied
+    FROM public."parking_spots"
+    WHERE parking_spot_id = $1;
+  `;
+    const values = [spotId];
+
+    try {
+      const { rows } = await this.db.query(query, values);
+      if (rows.length > 0) {
+        const row = rows[0];
+        return {
+          name: row.name,
+          occupied: row.occupied,
+        };
+      } else {
+        return null;
+      }
+    } catch (error) {
+      throw new Error(
+        `Unable to retrieve parking spot state: ${error.message}`
+      );
+    }
+  }
+
   async getParkingSpotById(spotId) {
     const query = `
       SELECT

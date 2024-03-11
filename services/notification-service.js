@@ -1,8 +1,10 @@
 const Notification = require("../models/notification");
 const UserService = require("../services/user-service");
+const ParkingSpotService = require("../services/parking-spot-service");
 
 const db = require("../db-connection");
 const userService = new UserService(db);
+const parkingSpotService = new ParkingSpotService(db);
 
 const { Expo } = require("expo-server-sdk");
 let expo = new Expo();
@@ -47,8 +49,8 @@ class NotificationService {
   }
 
   async sendPushNotification() {
+    console.log("notifications started");
     let messages = [];
-
     const users = await userService.getAllUsers();
 
     for (let user of users) {
@@ -56,16 +58,28 @@ class NotificationService {
         continue;
       }
 
-      messages.push({
-        to: user.pushToken,
-        sound: "default",
-        body: "body",
-        data: { withSome: "data" },
-      });
+      const userNotifications = await this.getAllUserNotifications(user.userId);
+
+      if (userNotifications.length > 0) {
+        var messageContent = "";
+        for (let notification of userNotifications) {
+          const actualSpotState =
+            await parkingSpotService.getParkingSpotStateById(
+              notification.parkingSpotId
+            );
+          messageContent += `${actualSpotState.name} - occupied: ${actualSpotState.occupied}\n`;
+        }
+
+        messages.push({
+          to: user.pushToken,
+          sound: "default",
+          body: messageContent,
+        });
+      }
     }
 
-    let chunks = expo.chunkPushNotifications(messages);
     let tickets = [];
+    let chunks = expo.chunkPushNotifications(messages);
     for (let chunk of chunks) {
       try {
         let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
@@ -136,15 +150,12 @@ class NotificationService {
 
     try {
       const { rows } = await this.db.query(query, values);
-      return rows.map(
-        (row) =>
-          new Notification({
-            notificationId: row.notification_id,
-            parkingSpotId: row.parking_spot_id,
-            userId: row.user_id,
-            createdAt: row.created_at,
-          })
-      );
+      return rows.map((row) => ({
+        notificationId: row.notification_id,
+        parkingSpotId: row.parking_spot_id,
+        userId: row.user_id,
+        createdAt: row.created_at,
+      }));
     } catch (error) {
       throw new Error(
         `Unable to retrieve user notifications: ${error.message}`
