@@ -63,7 +63,15 @@ class NotificationService {
             await parkingSpotService.getParkingSpotStateById(
               notification.parkingSpotId
             );
-          messageContent += `${actualSpotState.name} - occupied: ${actualSpotState.occupied}\n`;
+
+          const state =
+            actualSpotState.occupied !== null
+              ? actualSpotState.occupied
+              : "unified";
+
+          if (actualSpotState) {
+            messageContent += `${actualSpotState.name} - occupied: ${state}\n`;
+          }
         }
 
         messages.push({
@@ -138,8 +146,10 @@ class NotificationService {
 
   async getAllUserNotifications(userId) {
     const query = `
-      SELECT notification_id, parking_spot_id, user_id
-      FROM public."notifications"
+      SELECT nf.notification_id, ps.name AS parking_spot_name, nf.parking_spot_id
+      FROM public."notifications" nf
+      LEFT JOIN public."parking_spots" ps
+      ON ps.parking_spot_id = nf.parking_spot_id
       WHERE user_id = $1;
     `;
     const values = [userId];
@@ -149,8 +159,7 @@ class NotificationService {
       return rows.map((row) => ({
         notificationId: row.notification_id,
         parkingSpotId: row.parking_spot_id,
-        userId: row.user_id,
-        createdAt: row.created_at,
+        parkingSpotName: row.parking_spot_name,
       }));
     } catch (error) {
       throw new Error(

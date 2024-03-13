@@ -30,7 +30,7 @@ exports.updateUserProfile = async (req, res) => {
 
     if (existingUser) {
       await userService.updateUser(updateData);
-      res.status(200);
+      res.status(200).json({ success: true });
     } else {
       console.log(`User: ${userId} not found`);
       res.status(404).json({ error: "User not found" });
@@ -49,7 +49,7 @@ exports.setFavouriteParkingSpot = async (req, res) => {
     console.log(
       `User: ${userId} favourite parking spot: ${spotId} set successfully`
     );
-    res.status(201);
+    res.status(200).json({ success: true });
   } catch (error) {
     console.error(
       `Error setting favourite parking spot: ${spotId} of user: ${userId} - ${error.message}`
@@ -65,7 +65,7 @@ exports.deleteUser = async (req, res) => {
 
     if (deleted) {
       console.log(`User: ${userId} deleted successfuly`);
-      res.status(200);
+      res.status(200).json({ success: true });
     } else {
       console.log(`User: ${userId} not found`);
       res.status(404);

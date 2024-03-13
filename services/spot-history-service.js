@@ -48,8 +48,8 @@ class ParkingSpotHistoryService {
       LEFT JOIN (
         SELECT
           parking_spot_id,
-          (coordinates[0])::float AS longitude,
-          (coordinates[1])::float AS latitude
+          (coordinates[0])::float AS latitude,
+          (coordinates[1])::float AS longitude
         FROM public."parking_spot_coordinates"
       ) c
         ON p.parking_spot_id = c.parking_spot_id

@@ -34,8 +34,8 @@ class ParkingSpotService {
   async getParkingSpotCoordinatesById(spotId) {
     const query = `
       SELECT
-      (psc.coordinates)[0] AS longitude,
-      (psc.coordinates)[1] AS latitude
+      (psc.coordinates)[0] AS latitude,
+      (psc.coordinates)[1] AS longitude
     FROM public."parking_spots" ps
     JOIN public."parking_spot_coordinates" psc
       ON ps.parking_spot_id = psc.parking_spot_id
@@ -97,8 +97,8 @@ class ParkingSpotService {
         ps.name,
         ps.occupied,
         ps.updated_at,
-        (psc.coordinates)[0] AS longitude,
-        (psc.coordinates)[1] AS latitude
+        (psc.coordinates)[0] AS latitude,
+        (psc.coordinates)[1] AS longitude
       FROM public."parking_spots" ps
       LEFT JOIN public."parking_spot_coordinates" psc
         ON ps.parking_spot_id = psc.parking_spot_id
@@ -152,8 +152,8 @@ class ParkingSpotService {
     const query = `
       SELECT
         ps.parking_spot_id,
-        (psc.coordinates)[0] AS longitude,
-        (psc.coordinates)[1] AS latitude
+        (psc.coordinates)[0] AS latitude,
+        (psc.coordinates)[1] AS longitude
       FROM public."users" u
       LEFT JOIN public."parking_spots" ps
         ON u.favourite_spot_id = ps.parking_spot_id
@@ -194,12 +194,12 @@ class ParkingSpotService {
       const { rows } = await this.db.query(query, values);
       if (rows.length > 0) {
         const row = rows[0];
-        return ({
+        return {
           parkingSpotId: row.parking_spot_id,
           name: row.name,
           occupied: row.occupied,
           updatedAt: row.updated_at,
-        });
+        };
       } else {
         return null;
       }
@@ -215,8 +215,8 @@ class ParkingSpotService {
       ps.name,
       ps.occupied,
       ps.updated_at,
-      (psc.coordinates)[0] AS longitude,
-      (psc.coordinates)[1] AS latitude
+      (psc.coordinates)[0] AS latitude,
+      (psc.coordinates)[1] AS longitude
     FROM public."parking_spots" ps
     LEFT JOIN public."parking_spot_coordinates" psc
       ON ps.parking_spot_id = psc.parking_spot_id
@@ -224,16 +224,14 @@ class ParkingSpotService {
 
     try {
       const { rows } = await this.db.query(query);
-      return rows.map(
-        (row) =>({
-            parkingSpotId: row.parking_spot_id,
-            name: row.name,
-            occupied: row.occupied,
-            updatedAt: row.updated_at,
-            latitude: row.latitude,
-            longitude: row.longitude,
-          })
-      );
+      return rows.map((row) => ({
+        parkingSpotId: row.parking_spot_id,
+        name: row.name,
+        occupied: row.occupied,
+        updatedAt: row.updated_at,
+        latitude: row.latitude,
+        longitude: row.longitude,
+      }));
     } catch (error) {
       throw new Error(`Unable to retrieve all parking spots: ${error.message}`);
     }
@@ -246,8 +244,8 @@ class ParkingSpotService {
       ps.name,
       ps.occupied,
       ps.updated_at,
-      (psc.coordinates)[0] AS longitude,
-      (psc.coordinates)[1] AS latitude
+      (psc.coordinates)[0] AS latitude,
+      (psc.coordinates)[1] AS longitude
     FROM public."parking_spots" ps
     LEFT JOIN public."parking_spot_coordinates" psc
       ON ps.parking_spot_id = psc.parking_spot_id

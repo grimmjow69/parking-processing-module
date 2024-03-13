@@ -9,7 +9,7 @@ exports.registerPushToken = async (req, res) => {
     const pushToken = req.body.token;
     const result = await notificationService.savePushToken(userId, pushToken);
     console.log(`Sucefuly register push token of user: ${userId}`);
-    res.status(200);
+    res.status(201).json({ success: true });
   } catch (error) {
     console.error(`Error while registering push token: ${error.message}`);
     res.status(500);
@@ -21,7 +21,7 @@ exports.deletePushToken = async (req, res) => {
     const userId = req.body.userId;
     const result = await notificationService.deletePushToken(userId);
     console.log(`Sucefuly deleted push token of user: ${userId}`);
-    res.status(200);
+    res.status(200).json({ success: true });
   } catch (error) {
     console.error(`Error while deleting push token: ${error.message}`);
     res.status(500);
@@ -36,7 +36,7 @@ exports.subscribeToNotification = async (req, res) => {
     console.log(
       `User: ${userId} succesfuly subscribed for notification of parking spot with id: ${parkingSpotId}`
     );
-    res.status(201);
+    res.status(201).json({ success: true });
   } catch (error) {
     console.error(`Error subscribing to notification: ${error.message}`);
     res.status(500);
@@ -49,9 +49,7 @@ exports.getUserNotifications = async (req, res) => {
     const userNotifications = await notificationService.getAllUserNotifications(
       userId
     );
-
-    console.log(`Succesfuly got user notifications, user: ${userId}`);
-    res.status(200);
+    res.status(200).json({ userNotifications });
   } catch (error) {
     console.error(`Error getting user notifications: ${error.message}`);
     res.status(500);
@@ -66,7 +64,7 @@ exports.unsubscribeFromNotificationByNotificationId = async (req, res) => {
     console.log(
       `Succesfuly unsubscribed from notification id: ${notificationId}`
     );
-    res.status(200);
+    res.status(200).json({ success: true });
   } catch (error) {
     console.error(`Error unsubscribing from notifications: ${error.message}`);
     res.status(500);
@@ -86,7 +84,7 @@ exports.unsubscribeFromNotificationByUserAndParkingSpotId = async (
     console.log(
       `User: ${userId} succesfuly unsubscribed from notification of parking spot with id: ${parkingSpotId}`
     );
-    res.status(200);
+    res.status(200).json({ success: true });
   } catch (error) {
     console.error(`Error unsubscribing from notifications: ${error.message}`);
     res.status(500);
