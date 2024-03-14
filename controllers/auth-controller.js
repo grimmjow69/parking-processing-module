@@ -12,18 +12,19 @@ exports.registerUser = async (req, res) => {
     const isCredentialsTaken = await userService.userCredentialsTakenCheck(
       email
     );
+
     if (isCredentialsTaken) {
       console.log("User credentials (email) already taken");
-      return res.status(400).json({ error: "emailAlreadyTaken" });
+      return res.status(409).json({ error: "emailAlreadyTaken" });
+    } else {
+      const userId = await userService.addUser({
+        email: email,
+        password: password,
+      });
+  
+      console.log("Registration - SUCCESS");
+      res.status(201).json({ userId });
     }
-
-    const userId = await userService.addUser({
-      email: email,
-      password: password,
-    });
-
-    console.log("Registration - SUCCESS");
-    res.status(201).json({ userId });
   } catch (error) {
     console.error(`Error while user registration: ${error}`);
     res.status(500);
