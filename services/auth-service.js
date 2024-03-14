@@ -11,9 +11,10 @@ class AuthService {
       FROM public."users"
       WHERE user_id = $1
     `;
-    const values = [userId];
-    const { rows } = await this.db.query(query, values);
     try {
+      const values = [userId];
+      const { rows } = await this.db.query(query, values);
+
       if (rows.length > 0) {
         const hashedDbPassword = rows[0].password;
         return await bcrypt.compare(password, hashedDbPassword);
@@ -31,9 +32,11 @@ class AuthService {
       FROM public."users"
       WHERE email = $1
     `;
-    const values = [email];
-    const { rows } = await this.db.query(query, values);
+
     try {
+      const values = [email];
+      const { rows } = await this.db.query(query, values);
+
       if (rows.length > 0) {
         const hashedDbPassword = rows[0].password;
         return await bcrypt.compare(password, hashedDbPassword);

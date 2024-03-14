@@ -121,36 +121,40 @@ class UserService {
     }
   }
 
-  async updateUser(updateData) {
-    const setClauses = [];
-    const values = [];
-
-    if (updateData.password) {
-      // TODO pswd need to be rehashed
-      setClauses.push(`password = $${setClauses.length + 1}`);
-      values.push(updateData.password);
-    }
-    if (updateData.email) {
-      setClauses.push(`email = $${setClauses.length + 1}`);
-      values.push(updateData.email);
-    }
-    if (setClauses.length === 0) {
-      throw new Error("No valid fields provided for update");
-    }
-
-    values.push(updateData.userId);
+  async updateUserPassword(userId, newPassword) {
+    const saltRounds = 7;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
     const query = `
       UPDATE public."users"
-      SET ${setClauses.join(", ")}
-      WHERE user_id = $${values.length};
+      SET password = $1
+      WHERE user_id = $2;
     `;
+
+    const values = [hashedPassword, userId];
 
     try {
       await this.db.query(query, values);
       return true;
     } catch (error) {
-      throw new Error(`Unable to update user: ${error.message}`);
+      throw new Error(`Unable to update user email: ${error.message}`);
+    }
+  }
+
+  async updateUserEmail(userId, newEmail) {
+    const query = `
+      UPDATE public."users"
+      SET email = $1
+      WHERE user_id = $2;
+    `;
+
+    const values = [newEmail, userId];
+
+    try {
+      await this.db.query(query, values);
+      return true;
+    } catch (error) {
+      throw new Error(`Unable to update user password: ${error.message}`);
     }
   }
 
@@ -165,14 +169,14 @@ class UserService {
     try {
       if (rows.length > 0) {
         const row = rows[0];
-        return ({
+        return {
           userId: row.user_id,
           email: row.email,
           password: null,
           createdAt: row.created_at,
           updatedAt: row.updated_at,
           favouriteSpotId: row.favourite_spot_id,
-        });
+        };
       } else {
         return null;
       }
@@ -193,14 +197,14 @@ class UserService {
     try {
       if (rows.length > 0) {
         const row = rows[0];
-        return ({
+        return {
           userId: row.user_id,
           email: row.email,
           password: null,
           createdAt: row.created_at,
           updatedAt: row.updated_at,
           favouriteSpotId: row.favourite_spot_id,
-        });
+        };
       } else {
         return null;
       }

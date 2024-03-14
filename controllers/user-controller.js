@@ -1,8 +1,10 @@
 const UserService = require("../services/user-service");
+const AuthService = require("../services/auth-service");
 
 const db = require("../db-connection");
 
 const userService = new UserService(db);
+const authService = new AuthService(db);
 
 exports.getUserProfileById = async (req, res) => {
   try {
@@ -21,23 +23,62 @@ exports.getUserProfileById = async (req, res) => {
   }
 };
 
-exports.updateUserProfile = async (req, res) => {
+exports.updateUserPassword = async (req, res) => {
   try {
-    const userId = req.params.userId;
-    const updateData = req.body;
+    const { userId, newPassword, password } = req.body;
+    const passwordCheck = await authService.verifyPasswordWithUserId(
+      userId,
+      password
+    );
 
-    const existingUser = await userService.getUserByUserId(userId);
-
-    if (existingUser) {
-      await userService.updateUser(updateData);
-      res.status(200).json({ success: true });
+    if (!passwordCheck) {
+      res
+        .status(401)
+        .json({ success: false, error: "Password verification failed" });
     } else {
-      console.log(`User: ${userId} not found`);
-      res.status(404).json({ error: "User not found" });
+      const result = await userService.updateUserPassword(userId, newPassword);
+      res
+        .status(200)
+        .json({ success: result, message: "Password updated succesfully" });
     }
   } catch (error) {
-    console.error(`Error updating user profile: ${userId} - ${error.message}`);
+    console.error(`Error updating user password - ${error.message}`);
     res.status(500);
+  }
+};
+
+exports.updateUserEmail = async (req, res) => {
+  try {
+    const { userId, newEmail, password } = req.body;
+
+    const passwordCheck = await authService.verifyPasswordWithUserId(
+      userId,
+      password
+    );
+
+    if (!passwordCheck) {
+      return res
+        .status(401)
+        .json({ success: false, error: "Password verification failed" });
+    }
+
+    const emailCheck = await userService.getUserByEmail(newEmail);
+
+    if (emailCheck) {
+      return res
+        .status(409)
+        .json({ success: false, error: "Email already in use" });
+    } else {
+      await userService.updateUserEmail(userId, newEmail);
+      return res
+        .status(200)
+        .json({ success: true, message: "Email updated successfully" });
+    }
+  } catch (error) {
+    console.error(`Error updating user email - ${error.message}`);
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal server error" });
   }
 };
 
