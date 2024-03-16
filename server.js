@@ -17,10 +17,36 @@ const userRoutes = require("./routes/user-routes");
 const ExternalApiService = require("./services/external-api.service");
 const DataRetentionService = require("./services/data-retention-service");
 
-app.use("/auth", authRoutes);
-app.use("/notification", notificationRoutes);
-app.use("/parking", parkingSpotRoutes);
-app.use("/user", userRoutes);
+const basicAuth = require("express-basic-auth");
+
+app.use(
+  "/auth",
+  basicAuth({
+    users: { [process.env.MPA_AUTH_USERNAME]: process.env.MPA_AUTH_PASSWORD },
+  }),
+  authRoutes
+);
+app.use(
+  "/notification",
+  basicAuth({
+    users: { [process.env.MPA_AUTH_USERNAME]: process.env.MPA_AUTH_PASSWORD },
+  }),
+  notificationRoutes
+);
+app.use(
+  "/parking",
+  basicAuth({
+    users: { [process.env.MPA_AUTH_USERNAME]: process.env.MPA_AUTH_PASSWORD },
+  }),
+  parkingSpotRoutes
+);
+app.use(
+  "/user",
+  basicAuth({
+    users: { [process.env.MPA_AUTH_USERNAME]: process.env.MPA_AUTH_PASSWORD },
+  }),
+  userRoutes
+);
 
 const externalApiService = new ExternalApiService();
 const dataRetentionService = new DataRetentionService(db);
@@ -29,23 +55,23 @@ app.listen(process.env.PORT, function () {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 
-cron.schedule("59 23 * * 6", async () => {
-  try {
-    await dataRetentionService.cleanUpParkingHistory();
-    console.log("History of parking cleaned up successfully");
-  } catch (error) {
-    console.error(
-      "Error while parking cleaning up parking history:",
-      error.message
-    );
-  }
-});
+// cron.schedule("59 23 * * 6", async () => {
+//   try {
+//     await dataRetentionService.cleanUpParkingHistory();
+//     console.log("History of parking cleaned up successfully");
+//   } catch (error) {
+//     console.error(
+//       "Error while parking cleaning up parking history:",
+//       error.message
+//     );
+//   }
+// });
 
-cron.schedule("*/1 * * * *", async () => {
-  try {
-    await externalApiService.updateParkingLotsWithNewData();
-    console.log("Parking spots updated successfully.");
-  } catch (error) {
-    console.error("Error while updating parking spots:", error.message);
-  }
-});
+// cron.schedule("*/1 * * * *", async () => {
+//   try {
+//     await externalApiService.updateParkingLotsWithNewData();
+//     console.log("Parking spots updated successfully.");
+//   } catch (error) {
+//     console.error("Error while updating parking spots:", error.message);
+//   }
+// });

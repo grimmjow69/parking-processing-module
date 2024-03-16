@@ -13,7 +13,6 @@ const notificationService = new NotificationService(db);
 exports.getClosestFreeParkingSpot = async (req, res) => {
   const { latitude, longitude } = req.body;
 
-  console.log(latitude, longitude);
   try {
     const closestSpot = await parkingSpotService.getClosestFreeParkingSpot(
       latitude,
