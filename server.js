@@ -55,23 +55,23 @@ app.listen(process.env.PORT, function () {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 
-// cron.schedule("59 23 * * 6", async () => {
-//   try {
-//     await dataRetentionService.cleanUpParkingHistory();
-//     console.log("History of parking cleaned up successfully");
-//   } catch (error) {
-//     console.error(
-//       "Error while parking cleaning up parking history:",
-//       error.message
-//     );
-//   }
-// });
+cron.schedule("59 23 * * 6", async () => {
+  try {
+    await dataRetentionService.cleanUpParkingHistory();
+    console.log("History of parking cleaned up successfully");
+  } catch (error) {
+    console.error(
+      "Error while parking cleaning up parking history:",
+      error.message
+    );
+  }
+});
 
-// cron.schedule("*/1 * * * *", async () => {
-//   try {
-//     await externalApiService.updateParkingLotsWithNewData();
-//     console.log("Parking spots updated successfully.");
-//   } catch (error) {
-//     console.error("Error while updating parking spots:", error.message);
-//   }
-// });
+cron.schedule("*/1 * * * *", async () => {
+  try {
+    await externalApiService.updateParkingLotsWithNewData();
+    console.log("Parking spots updated successfully.");
+  } catch (error) {
+    console.error("Error while updating parking spots:", error.message);
+  }
+});

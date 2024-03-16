@@ -4,15 +4,18 @@ const db = require("../db-connection");
 const parkingSpotService = new ParkingSpotService(db);
 const NotificationService = require("../services/notification-service");
 const notificationService = new NotificationService(db);
+const { Base64 } = require('js-base64');
 
-const { EXTERNAL_API_URL } = process.env;
+const { PPM_AUTH_USERNAME, PPM_AUTH_PASSWORD, PPM_URL } = process.env;
 
 class ExternalApiService {
   constructor() {
+    const base64Auth = Base64.encode(`${PPM_AUTH_USERNAME}:${PPM_AUTH_PASSWORD}`);
     this.apiClient = axios.create({
-      baseURL: EXTERNAL_API_URL,
+      baseURL: PPM_URL,
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Basic ${base64Auth}`
       },
     });
   }
