@@ -41,7 +41,7 @@ cron.schedule("59 23 * * 6", async () => {
   }
 });
 
-cron.schedule("*/15 * * * *", async () => {
+cron.schedule("*/1 * * * *", async () => {
   try {
     await externalApiService.updateParkingLotsWithNewData();
     console.log("Parking spots updated successfully.");

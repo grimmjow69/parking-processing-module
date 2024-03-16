@@ -52,7 +52,11 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
 exports.getAllParkingSpots = async (req, res) => {
   try {
     const parkingSpots = await parkingSpotService.getAllParkingSpots();
-    res.status(200).json(parkingSpots);
+    const updatedAt = new Date().toISOString();
+    res.status(200).json({
+      updatedAt: updatedAt,
+      data: parkingSpots
+    });
   } catch (error) {
     console.error(`Error while getting all parking spots: ${error.message}`);
     res.status(500);
