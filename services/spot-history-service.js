@@ -4,29 +4,14 @@ class ParkingSpotHistoryService {
   }
 
   async updateParkingSpotHistory(parkingSpotId, occupied) {
-    const lastRecord = await this.getLastParkingSpotHistoryRecord(
-      parkingSpotId
-    );
 
     const query = `
-      INSERT INTO public."parking_spot_histories" (parking_spot_id, occupied, occupied_since, updated_at)
-      VALUES ($1, $2, $3, NOW())
+      INSERT INTO public."parking_spot_histories" (parking_spot_id, occupied, updated_at)
+      VALUES ($1, $2, NOW())
       RETURNING *;
     `;
 
-    var newOccupiedSince = null;
-    const now = new Date();
-    if (lastRecord) {
-      if (occupied) {
-        newOccupiedSince = lastRecord.occupied ? lastRecord.occupiedSince : now;
-      } else {
-        newOccupiedSince = null;
-      }
-    } else {
-      newOccupiedSince = occupied ? now : null;
-    }
-
-    const values = [parkingSpotId, occupied, newOccupiedSince];
+    const values = [parkingSpotId, occupied];
 
     const { rows } = await this.db.query(query, values);
     if (rows.length > 0) {
@@ -93,7 +78,6 @@ class ParkingSpotHistoryService {
           historyId: row.history_id,
           parkingSpotId: row.parking_spot_id,
           occupied: row.occupied,
-          occupiedSince: row.occupied_since,
           updatedAt: row.updated_at,
         };
       } else {
@@ -102,6 +86,42 @@ class ParkingSpotHistoryService {
     } catch (error) {
       throw new Error(
         `Unable to retrieve parking spot history: ${error.message}`
+      );
+    }
+  }
+
+  async getTimeSinceStatusChange(parkingSpotId) {
+    const query = `
+      SELECT
+        occupied,
+        updated_at
+      FROM public."parking_spot_histories"
+      WHERE parking_spot_id = $1
+      ORDER BY updated_at DESC
+    `;
+
+    const values = [parkingSpotId];
+
+    try {
+      const { rows } = await this.db.query(query, values);
+
+      if (rows.length <= 1) {
+        return null;
+      }
+
+      const currentStatus = rows[0].occupied;
+      const statusChangeEvent = rows.find((row, index) => {
+        return index > 0 && row.occupied !== currentStatus;
+      });
+
+      if (statusChangeEvent) {
+        return statusChangeEvent.updated_at;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      throw new Error(
+        `Unable to retrieve the time since the last status change: ${error.message}`
       );
     }
   }

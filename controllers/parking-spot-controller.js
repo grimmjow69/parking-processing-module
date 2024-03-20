@@ -50,8 +50,10 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
 
 exports.getAllParkingSpots = async (req, res) => {
   try {
+
     const parkingSpots = await parkingSpotService.getAllParkingSpots();
-    const updatedAt = new Date().toISOString();
+    const updatedAt = await parkingSpotService.getLastDateOfLastSuccessfulUpdate();
+    
     res.status(200).json({
       updatedAt: updatedAt,
       data: parkingSpots
@@ -120,6 +122,8 @@ exports.getParkingSpotByName = async (req, res) => {
   }
 };
 
+exports.getSpotHistoryById
+
 exports.getSpotDetailById = async (req, res) => {
   try {
     const userId = req.body.userId;
@@ -128,7 +132,7 @@ exports.getSpotDetailById = async (req, res) => {
     const result = {
       isFavourite: false,
       isNotificationEnabled: false,
-      history: [],
+      stateSince: null
     };
 
     const user = await userService.getUserByUserId(userId);
@@ -147,19 +151,28 @@ exports.getSpotDetailById = async (req, res) => {
       result.isNotificationEnabled = true;
     }
 
+
+    const lastStateChange = await parkingSpotHistoryService.getTimeSinceStatusChange(spotId);
+
+    result.stateSince = lastStateChange;
+
+    res.status(200).json({ data: result });
+  } catch (error) {
+    console.error(
+      `Error getting detail of spot: ${spotId} error: ${error.message}`
+    );
+    res.status(500);
+  }
+};
+
+exports.getSpotHistoryById = async (req, res) => {
+  try {
+    const spotId = req.params.spotId;
+
     const historyRecords =
       await parkingSpotHistoryService.getParkingSpotHistoryById(spotId);
 
-    if (historyRecords) {
-      const first10Records = historyRecords.slice(0, 50);
-      first10Records.forEach((record) => {
-        result.history.push({
-          occupied: record.occupied,
-          updatedAt: record.updatedAt,
-        });
-      });
-    }
-    res.status(200).json({ data: result });
+    res.status(200).json({ historyRecords: historyRecords });
   } catch (error) {
     console.error(
       `Error getting detail of spot: ${spotId} error: ${error.message}`

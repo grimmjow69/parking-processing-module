@@ -237,6 +237,31 @@ class ParkingSpotService {
     }
   }
 
+  async getLastDateOfLastSuccessfulUpdate () {
+    const query = `
+      SELECT
+        updated_at
+      FROM public."detection_updates"
+      WHERE success = true
+        ORDER BY updated_at DESC
+        LIMIT 1
+    `;
+
+    try {
+      const { rows } = await this.db.query(query);
+      if (rows.length > 0) {
+        const row = rows[0];
+        return row.updated_at;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      throw new Error(
+        `Unable to retrieve last sucessfuly execution of detection: ${error.message}`
+      );
+    }
+  }
+
   async getAllFreeParkingSpots() {
     const query = `
       SELECT

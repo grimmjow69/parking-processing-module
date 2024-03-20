@@ -19,7 +19,7 @@ exports.registerPushToken = async (req, res) => {
 exports.deletePushToken = async (req, res) => {
   try {
     const userId = req.body.userId;
-    const result = await notificationService.deletePushToken(userId);
+    await notificationService.deletePushToken(userId);
     console.log(`Sucefuly deleted push token of user: ${userId}`);
     res.status(200).json({ success: true });
   } catch (error) {

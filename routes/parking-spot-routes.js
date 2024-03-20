@@ -36,4 +36,9 @@ router.get(
   parkingController.getUserFavouriteParkingSpot
 );
 
+router.get(
+  "/spot-history/:spotId",
+  parkingController.getSpotHistoryById
+);
+
 module.exports = router;

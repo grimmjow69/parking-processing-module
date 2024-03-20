@@ -4,18 +4,21 @@ const db = require("../db-connection");
 const parkingSpotService = new ParkingSpotService(db);
 const NotificationService = require("../services/notification-service");
 const notificationService = new NotificationService(db);
-const { Base64 } = require('js-base64');
+const { Base64 } = require("js-base64");
 
 const { PPM_AUTH_USERNAME, PPM_AUTH_PASSWORD, PPM_URL } = process.env;
 
 class ExternalApiService {
   constructor() {
-    const base64Auth = Base64.encode(`${PPM_AUTH_USERNAME}:${PPM_AUTH_PASSWORD}`);
+    this.db = db;
+    const base64Auth = Base64.encode(
+      `${PPM_AUTH_USERNAME}:${PPM_AUTH_PASSWORD}`
+    );
     this.apiClient = axios.create({
       baseURL: PPM_URL,
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Basic ${base64Auth}`
+        Authorization: `Basic ${base64Auth}`,
       },
     });
   }
@@ -50,9 +53,25 @@ class ExternalApiService {
           }
         }
       }
-      notificationService.sendPushNotification();
+      this.updateLastDetectionMetadata(true);
+      await notificationService.sendPushNotification();
     } catch (error) {
+      this.updateLastDetectionMetadata(false);
       console.error("Error while updating parking spots:", error.message);
+    }
+  }
+
+  async updateLastDetectionMetadata(success) {
+    const query = `
+      INSERT INTO public."detection_updates" (success, updated_at)
+      VALUES ($1, NOW())
+    `;
+    const values = [success];
+
+    try {
+      await this.db.query(query, values);
+    } catch (error) {
+      console.error(`Unable to update last detection metadata: ${error.message}`);
     }
   }
 }
