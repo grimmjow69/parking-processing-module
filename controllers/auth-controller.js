@@ -42,14 +42,14 @@ exports.loginUser = async (req, res) => {
     if (passwordVerified) {
       const userData = await userService.getUserByEmail(email);
       console.log(`Login - SUCCESS`);
-      return res.status(200).json({ loginSuccessfull: true, user: userData });
+      return res.status(200).json({ success: true, user: userData });
     } else {
       console.log(`Login - FAILED`);
-      return res.status(401).json({ loginSuccessfull: false });
+      return res.status(401).json({ success: false });
     }
   } catch (error) {
     console.error(`Error while user login: ${error}`);
-    res.status(500);
+    res.status(500).json({ success: false });
   }
 };
 

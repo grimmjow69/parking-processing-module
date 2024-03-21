@@ -13,6 +13,7 @@ const authRoutes = require("./routes/auth-routes");
 const notificationRoutes = require("./routes/notification-routes");
 const parkingSpotRoutes = require("./routes/parking-spot-routes");
 const userRoutes = require("./routes/user-routes");
+const reportRoutes = require("./routes/report-routes");
 
 const ExternalApiService = require("./services/external-api.service");
 const DataRetentionService = require("./services/data-retention-service");
@@ -32,6 +33,13 @@ app.use(
     users: { [process.env.MPA_AUTH_USERNAME]: process.env.MPA_AUTH_PASSWORD },
   }),
   notificationRoutes
+);
+app.use(
+  "/report",
+  basicAuth({
+    users: { [process.env.MPA_AUTH_USERNAME]: process.env.MPA_AUTH_PASSWORD },
+  }),
+  reportRoutes
 );
 app.use(
   "/parking",
@@ -67,11 +75,11 @@ cron.schedule("59 23 * * 6", async () => {
   }
 });
 
-cron.schedule("*/30 * * * *", async () => {
-  try {
-    await externalApiService.updateParkingLotsWithNewData();
-    console.log("Parking spots updated successfully.");
-  } catch (error) {
-    console.error("Error while updating parking spots:", error.message);
-  }
-});
+// cron.schedule("*/30 * * * *", async () => {
+//   try {
+//     await externalApiService.updateParkingLotsWithNewData();
+//     console.log("Parking spots updated successfully.");
+//   } catch (error) {
+//     console.error("Error while updating parking spots:", error.message);
+//   }
+// });
