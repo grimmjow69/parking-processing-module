@@ -86,7 +86,7 @@ exports.setFavouriteParkingSpot = async (req, res) => {
   try {
     const { userId, spotId } = req.body;
 
-    await userService.updateFavouriteSpot(userId, spotId);
+    await userService.updateUsersFavouriteSpot(userId, spotId);
     console.log(
       `User: ${userId} favourite parking spot: ${spotId} set successfully`
     );

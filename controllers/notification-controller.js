@@ -31,7 +31,7 @@ exports.deletePushToken = async (req, res) => {
 exports.subscribeToNotification = async (req, res) => {
   try {
     const { parkingSpotId, userId } = req.body;
-    await notificationService.addNotification(parkingSpotId, userId);
+    await notificationService.subscribeNotification(parkingSpotId, userId);
 
     console.log(
       `User: ${userId} succesfuly subscribed for notification of parking spot with id: ${parkingSpotId}`
@@ -59,7 +59,7 @@ exports.getUserNotifications = async (req, res) => {
 exports.unsubscribeFromNotificationByNotificationId = async (req, res) => {
   try {
     const notificationId = req.params.notificationId;
-    await notificationService.deleteNotificationById(notificationId);
+    await notificationService.unsubscribeNotification(notificationId);
 
     console.log(
       `Succesfuly unsubscribed from notification id: ${notificationId}`

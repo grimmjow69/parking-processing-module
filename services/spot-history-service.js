@@ -4,7 +4,6 @@ class ParkingSpotHistoryService {
   }
 
   async updateParkingSpotHistory(parkingSpotId, occupied) {
-
     const query = `
       INSERT INTO public."parking_spot_histories" (parking_spot_id, occupied, updated_at)
       VALUES ($1, $2, NOW())

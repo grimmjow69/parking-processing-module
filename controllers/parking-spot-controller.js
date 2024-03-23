@@ -50,13 +50,13 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
 
 exports.getAllParkingSpots = async (req, res) => {
   try {
-
     const parkingSpots = await parkingSpotService.getAllParkingSpots();
-    const updatedAt = await parkingSpotService.getLastDateOfLastSuccessfulUpdate();
-    
+    const updatedAt =
+      await parkingSpotService.getLastDateOfLastSuccessfulUpdate();
+
     res.status(200).json({
       updatedAt: updatedAt,
-      data: parkingSpots
+      data: parkingSpots,
     });
   } catch (error) {
     console.error(`Error while getting all parking spots: ${error.message}`);
@@ -122,7 +122,7 @@ exports.getParkingSpotByName = async (req, res) => {
   }
 };
 
-exports.getSpotHistoryById
+exports.getSpotHistoryById;
 
 exports.getSpotDetailById = async (req, res) => {
   try {
@@ -132,7 +132,7 @@ exports.getSpotDetailById = async (req, res) => {
     const result = {
       isFavourite: false,
       isNotificationEnabled: false,
-      stateSince: null
+      stateSince: null,
     };
 
     const user = await userService.getUserByUserId(userId);
@@ -151,8 +151,8 @@ exports.getSpotDetailById = async (req, res) => {
       result.isNotificationEnabled = true;
     }
 
-
-    const lastStateChange = await parkingSpotHistoryService.getTimeSinceStatusChange(spotId);
+    const lastStateChange =
+      await parkingSpotHistoryService.getTimeSinceStatusChange(spotId);
 
     result.stateSince = lastStateChange;
 

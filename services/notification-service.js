@@ -45,7 +45,7 @@ class NotificationService {
     }
   }
 
-  async sendPushNotification() {
+  async sendPushNotifications() {
     let messages = [];
     const users = await userService.getAllUsers();
 
@@ -86,7 +86,7 @@ class NotificationService {
     let chunks = expo.chunkPushNotifications(messages);
     for (let chunk of chunks) {
       try {
-        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+        let ticketChunk = await expo.sendPushNotificationssAsync(chunk);
         tickets.push(...ticketChunk);
       } catch (error) {
         console.error(error);
@@ -95,7 +95,7 @@ class NotificationService {
     return tickets;
   }
 
-  async addNotification(parkingSpotId, userId) {
+  async subscribeNotification(parkingSpotId, userId) {
     const query = `
       INSERT INTO public."notifications" (parking_spot_id, user_id)
       VALUES ($1, $2)
@@ -114,7 +114,7 @@ class NotificationService {
     }
   }
 
-  async deleteNotificationById(notificationId) {
+  async unsubscribeNotification(notificationId) {
     const query = `
       DELETE FROM public."notifications"
       WHERE notification_id = $1;

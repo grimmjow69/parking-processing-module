@@ -54,7 +54,7 @@ class ExternalApiService {
         }
       }
       this.updateLastDetectionMetadata(true);
-      await notificationService.sendPushNotification();
+      await notificationService.sendPushNotifications();
     } catch (error) {
       this.updateLastDetectionMetadata(false);
       console.error("Error while updating parking spots:", error.message);
@@ -71,7 +71,9 @@ class ExternalApiService {
     try {
       await this.db.query(query, values);
     } catch (error) {
-      console.error(`Unable to update last detection metadata: ${error.message}`);
+      console.error(
+        `Unable to update last detection metadata: ${error.message}`
+      );
     }
   }
 }

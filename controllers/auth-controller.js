@@ -17,11 +17,11 @@ exports.registerUser = async (req, res) => {
       console.log("User credentials (email) already taken");
       return res.status(409).json({ error: "emailAlreadyTaken" });
     } else {
-      const userId = await userService.addUser({
+      const userId = await userService.registerNewUser({
         email: email,
         password: password,
       });
-  
+
       console.log("Registration - SUCCESS");
       res.status(201).json({ userId });
     }

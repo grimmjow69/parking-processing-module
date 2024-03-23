@@ -1,11 +1,14 @@
 const bcrypt = require("bcryptjs");
+const db = require("../db-connection");
+const NotificationService = require("../services/notification-service");
+const notificationService = new NotificationService(db);
 
 class UserService {
   constructor(db) {
     this.db = db;
   }
 
-  async addUser(userDetail) {
+  async registerNewUser(userDetail) {
     const query = `
         INSERT INTO public."users" (
           email, 
@@ -43,7 +46,6 @@ class UserService {
   }
 
   async deleteUser(userId) {
-    // TO DO delete user notifications
     const query = `
       DELETE FROM public."users"
       WHERE user_id = $1;
@@ -51,6 +53,7 @@ class UserService {
     const values = [userId];
 
     try {
+      await notificationService.deleteNotificationsByUserId(userId);
       const result = await this.db.query(query, values);
       return result.rowCount > 0;
     } catch (error) {
@@ -58,7 +61,7 @@ class UserService {
     }
   }
 
-  async updateFavouriteSpot(userId, favouriteSpotId) {
+  async updateUsersFavouriteSpot(userId, favouriteSpotId) {
     const query = `
       UPDATE public.users
       SET favourite_spot_id = $1, updated_at = CURRENT_TIMESTAMP
@@ -71,31 +74,6 @@ class UserService {
       return true;
     } catch (error) {
       throw new Error(`Unable to update user favourite spot: ${error.message}`);
-    }
-  }
-
-  async getAllUsersWithSameFavouriteSpot(favouriteSpotId) {
-    const query = `
-      SELECT user_id, email,  created_at, updated_at, favourite_spot_id
-      FROM public."users"
-      WHERE favourite_spot_id = $1
-    `;
-
-    const values = [favouriteSpotId];
-    try {
-      const { rows } = await this.db.query(query, values);
-      return rows.map((row) => ({
-        userId: row.user_id,
-        email: row.email,
-        password: null,
-        createdAt: row.created_at,
-        updatedAt: row.updated_at,
-        favouriteSpotId: row.favourite_spot_id,
-      }));
-    } catch (error) {
-      throw new Error(
-        `Unable to retrieve all users with same favourite spot: ${error.message}`
-      );
     }
   }
 
