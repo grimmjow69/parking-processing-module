@@ -109,9 +109,15 @@ class ParkingSpotHistoryService {
       }
 
       const currentStatus = rows[0].occupied;
-      const statusChangeEvent = rows.find((row, index) => {
-        return index > 0 && row.occupied !== currentStatus;
-      });
+      var statusChangeEvent = null;
+
+      for (let i = 1; i < rows.length; i++) {
+        if (rows[i].occupied === currentStatus) {
+          statusChangeEvent = rows[i];
+        } else {
+          break;
+        }
+      }
 
       if (statusChangeEvent) {
         return statusChangeEvent.updated_at;
