@@ -1,9 +1,10 @@
-const UserService = require("../services/user-service");
 const ParkingSpotService = require("../services/parking-spot-service");
+const UserService = require("../services/user-service");
 
 const db = require("../db-connection");
-const userService = new UserService(db);
+
 const parkingSpotService = new ParkingSpotService(db);
+const userService = new UserService(db);
 
 const { Expo } = require("expo-server-sdk");
 let expo = new Expo();
@@ -128,7 +129,6 @@ class NotificationService {
       throw new Error(`Unable to delete notification: ${error.message}`);
     }
   }
-
   async deleteNotificationsByUserId(userId) {
     const query = `
       DELETE FROM public."notifications"

@@ -1,10 +1,12 @@
 const UserService = require("../services/user-service");
 const AuthService = require("../services/auth-service");
+const NotificationService = require("../services/notification-service");
 
 const db = require("../db-connection");
 
 const userService = new UserService(db);
 const authService = new AuthService(db);
+const notificationService = new NotificationService(db);
 
 exports.getUserProfileById = async (req, res) => {
   try {
@@ -101,7 +103,8 @@ exports.setFavouriteParkingSpot = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const { userId } = req.body;
+    await notificationService.deleteNotificationsByUserId(userId);
     const deleted = await userService.deleteUser(userId);
 
     if (deleted) {
@@ -112,7 +115,7 @@ exports.deleteUser = async (req, res) => {
       res.status(404);
     }
   } catch (error) {
-    console.error(`Error while deleting user: ${userId} - ${error.message}`);
+    console.error(`Error while deleting user: ${error.message}`);
     res.status(500);
   }
 };

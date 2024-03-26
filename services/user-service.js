@@ -1,7 +1,5 @@
 const bcrypt = require("bcryptjs");
 const db = require("../db-connection");
-const NotificationService = require("../services/notification-service");
-const notificationService = new NotificationService(db);
 
 class UserService {
   constructor(db) {
@@ -53,7 +51,6 @@ class UserService {
     const values = [userId];
 
     try {
-      await notificationService.deleteNotificationsByUserId(userId);
       const result = await this.db.query(query, values);
       return result.rowCount > 0;
     } catch (error) {
@@ -105,7 +102,8 @@ class UserService {
 
     const query = `
       UPDATE public."users"
-      SET password = $1
+      SET password = $1,
+      updated_at = CURRENT_TIMESTAMP
       WHERE user_id = $2;
     `;
 
@@ -122,7 +120,8 @@ class UserService {
   async updateUserEmail(userId, newEmail) {
     const query = `
       UPDATE public."users"
-      SET email = $1
+      SET email = $1,
+      updated_at = CURRENT_TIMESTAMP
       WHERE user_id = $2;
     `;
 

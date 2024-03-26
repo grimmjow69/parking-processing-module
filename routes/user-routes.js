@@ -10,6 +10,6 @@ router.put("/update-email", userController.updateUserEmail);
 
 router.put("/update-favourite-spot", userController.setFavouriteParkingSpot);
 
-router.delete("/delete/:userId", userController.deleteUser);
+router.delete("/delete", userController.deleteUser);
 
 module.exports = router;
