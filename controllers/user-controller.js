@@ -14,16 +14,28 @@ exports.getUserProfileById = async (req, res) => {
     const user = await userService.getUserByUserId(userId);
 
     if (user) {
-      res.status(200).json({ user });
+      res.status(200).json({
+        operation: "get-profile",
+        user: user,
+        success: true,
+      });
     } else {
       console.log(`User with ID ${userId} not found`);
-      res.status(404).json({ error: `User with ID ${userId} not found` });
+      res.status(404).json({
+        operation: "get-profile",
+        success: false,
+        error: `User with ID ${userId} not found`,
+      });
     }
   } catch (error) {
     console.error(
       `Error getting profile for user with ID ${userId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-profile",
+      success: false,
+      error: error.message,
+    });
   }
 };
 
@@ -37,11 +49,14 @@ exports.updateUserPassword = async (req, res) => {
 
     if (!passwordCheck) {
       res.status(401).json({
+        operation: "update-password",
+        error: "Invalid password",
         success: false,
       });
     } else {
       const result = await userService.updateUserPassword(userId, newPassword);
       res.status(200).json({
+        operation: "update-password",
         success: result,
       });
     }
@@ -49,7 +64,11 @@ exports.updateUserPassword = async (req, res) => {
     console.error(
       `Error updating password for user with ID ${userId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "update-password",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -64,6 +83,7 @@ exports.updateUserEmail = async (req, res) => {
 
     if (!passwordCheck) {
       return res.status(401).json({
+        operation: "update-email",
         success: false,
       });
     }
@@ -72,11 +92,14 @@ exports.updateUserEmail = async (req, res) => {
 
     if (emailCheck) {
       return res.status(409).json({
+        operation: "update-email",
+        error: "Email already in use",
         success: false,
       });
     } else {
       await userService.updateUserEmail(userId, newEmail);
       return res.status(200).json({
+        operation: "update-email",
         success: true,
       });
     }
@@ -84,9 +107,11 @@ exports.updateUserEmail = async (req, res) => {
     console.error(
       `Error updating email for user with ID ${userId}: ${error.message}`
     );
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal server error" });
+    return res.status(500).json({
+      operation: "update-email",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -98,12 +123,16 @@ exports.setFavouriteParkingSpot = async (req, res) => {
     console.log(
       `User with ID ${userId} set parking spot with ID ${spotId} as favourite successfully`
     );
-    res.status(200).json({ success: true });
+    res.status(200).json({ operation: "set-favourite-spot", success: true });
   } catch (error) {
     console.error(
       `Error setting parking spot with ID ${spotId} as favourite for user with ID ${userId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "set-favourite-spot",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -115,15 +144,23 @@ exports.deleteUser = async (req, res) => {
 
     if (deleted) {
       console.log(`User with ID ${userId} deleted successfully`);
-      res.status(200).json({ success: true });
+      res.status(200).json({ operation: "delete-user", success: true });
     } else {
       console.log(`User with ID ${userId} not found`);
-      res.status(404);
+      res.status(404).json({
+        operation: "delete-user",
+        error: "User not found",
+        success: false,
+      });
     }
   } catch (error) {
     console.error(
       `Error while deleting user with ID ${userId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "delete-user",
+      error: error.message,
+      success: false,
+    });
   }
 };

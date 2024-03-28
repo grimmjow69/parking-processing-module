@@ -15,7 +15,13 @@ exports.registerUser = async (req, res) => {
 
     if (isCredentialsTaken) {
       console.log("User credentials (email) already taken");
-      return res.status(409).json({ error: "emailAlreadyTaken" });
+      return res
+        .status(409)
+        .json({
+          operation: "register",
+          error: "User credentials (email) already taken",
+          success: false,
+        });
     } else {
       const userId = await userService.registerNewUser({
         email: email,
@@ -23,11 +29,17 @@ exports.registerUser = async (req, res) => {
       });
 
       console.log("Registration - SUCCESS");
-      res.status(201).json({ userId });
+      res
+        .status(201)
+        .json({ operation: "register", userId: userId, success: true });
     }
   } catch (error) {
     console.error(`Error while user registration: ${error}`);
-    res.status(500);
+    res.status(500).json({
+      operation: "register",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -44,14 +56,26 @@ exports.loginUser = async (req, res) => {
       console.log(
         `Login - SUCCESS: User with email ${email} logged in successfully`
       );
-      return res.status(200).json({ success: true, user: userData });
+      return res.status(200).json({
+        operation: "login",
+        success: true,
+        user: userData,
+      });
     } else {
       console.log(`Login - FAILED`);
-      return res.status(401).json({ success: false });
+      return res.status(401).json({
+        operation: "login",
+        error: "Incorrect password",
+        success: false,
+      });
     }
   } catch (error) {
     console.error(`Error while logging in, user with email ${email}: ${error}`);
-    res.status(500).json({ success: false });
+    res.status(500).json({
+      operation: "login",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -68,19 +92,28 @@ exports.verifyPassword = async (req, res) => {
       console.log(
         `Password verification - SUCCESS: User with ID ${userId} verified successfully`
       );
-      return res.status(200).json({ passwordVerified: true });
+      return res.status(200).json({
+        operation: "verify-password",
+        success: true,
+      });
     } else {
       console.log(
         `Password verification - FAILED: Incorrect password for user with ID ${userId}`
       );
-      return res.status(401).json({ passwordVerified: false });
+      return res.status(401).json({
+        operation: "verify-password",
+        error: "Incorrect password",
+        success: false,
+      });
     }
   } catch (error) {
     console.error(
       `Error while verifying password for user with ID ${userId}: ${error}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "verify-password",
+      error: error.message,
+      success: false,
+    });
   }
 };
-
-exports.logoutUser = async (req, res) => {};

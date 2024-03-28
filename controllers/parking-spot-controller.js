@@ -20,15 +20,27 @@ exports.getClosestFreeParkingSpot = async (req, res) => {
     );
 
     if (closestSpot) {
-      res.status(200).json(closestSpot);
+      res.status(200).json({
+        operation: "get-closest-free-spot",
+        closestSpot: closestSpot,
+        success: true,
+      });
     } else {
-      res.status(404).json({ error: "No free parking spot found" });
+      res.status(404).json({
+        operation: "get-closest-free-spot",
+        error: "No free parking spot found",
+        success: false,
+      });
     }
   } catch (error) {
     console.error(
       `Error while finding closest free parking spot from coordinates (${latitude}, ${longitude}): ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-closest-free-spot",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -38,15 +50,28 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
     const favouriteSpot = await parkingSpotService.getUserFavouriteSpot(userId);
 
     if (favouriteSpot) {
-      res.status(200).json({ favouriteSpot: favouriteSpot });
+      res.status(200).json({
+        operation: "get-user-favourite-spot",
+        avouriteSpot: favouriteSpot,
+        success: true,
+      });
     } else {
-      res.status(200).json({ favouriteSpot: null });
+      res.status(200).json({
+        operation: "get-user-favourite-spot",
+        data: null,
+        error: "User has no favourite parking spot",
+        success: true,
+      });
     }
   } catch (error) {
     console.error(
       `Error getting favourite parking spot for user with ID ${userId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-user-favourite-spot",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -57,24 +82,38 @@ exports.getAllParkingSpots = async (req, res) => {
       await parkingSpotService.getLastDateOfLastSuccessfulUpdate();
 
     res.status(200).json({
+      operation: "get-all-spots",
       updatedAt: updatedAt,
       data: parkingSpots,
+      success: true,
     });
   } catch (error) {
     console.error(`Error while getting all parking spots: ${error.message}`);
-    res.status(500);
+    res.status(500).json({
+      operation: "get-all-spots",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
 exports.getAllFreeParkingSpots = async (req, res) => {
   try {
     const freeParkingSpots = await parkingSpotService.getAllFreeParkingSpots();
-    res.status(200).json(freeParkingSpots);
+    res.status(200).json({
+      operation: "get-all-free-spots",
+      freeParkingSpots: freeParkingSpots,
+      success: true,
+    });
   } catch (error) {
     console.error(
       `Error while getting all free parking spots: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-all-free-spots",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -83,12 +122,20 @@ exports.getParkingSpotCoordinates = async (req, res) => {
   try {
     const spotCoordinates =
       await parkingSpotService.getParkingSpotCoordinatesById(spotId);
-    res.status(200).json(spotCoordinates);
+    res.status(200).json({
+      operation: "get-spot-coordinates",
+      spotCoordinates: spotCoordinates,
+      success: true,
+    });
   } catch (error) {
     console.error(
       `Error while getting coordinates of parking spot with ID ${spotId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-spot-coordinates",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -99,13 +146,21 @@ exports.getParkingSpotById = async (req, res) => {
     if (parkingSpot) {
       res.json(parkingSpot);
     } else {
-      res.status(404).json({ error: "Parking spot not found" });
+      res.status(404).json({
+        operation: "get-spot-by-id",
+        error: "Parking spot not found",
+        success: false,
+      });
     }
   } catch (error) {
     console.error(
       `Error while getting parking spot by ID ${spotId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-spot-by-id",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -116,17 +171,23 @@ exports.getParkingSpotByName = async (req, res) => {
     if (parkingSpot) {
       res.json(parkingSpot);
     } else {
-      res.status(404).json({ error: "Parking spot not found" });
+      res.status(404).json({
+        operation: "get-spot-by-name",
+        error: "Parking spot not found",
+        success: false,
+      });
     }
   } catch (error) {
     console.error(
       `Error getting parking spot by name ${spotName}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-spot-by-name",
+      error: error.message,
+      success: false,
+    });
   }
 };
-
-exports.getSpotHistoryById;
 
 exports.getSpotDetailById = async (req, res) => {
   try {
@@ -160,12 +221,18 @@ exports.getSpotDetailById = async (req, res) => {
 
     result.stateSince = lastStateChange;
 
-    res.status(200).json({ data: result });
+    res
+      .status(200)
+      .json({ operation: "get-spot-detail", data: result, success: true });
   } catch (error) {
     console.error(
       `Error getting detail of parking spot with ID ${spotId} for user with ID ${userId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-spot-detail",
+      error: error.message,
+      success: false,
+    });
   }
 };
 
@@ -176,11 +243,19 @@ exports.getSpotHistoryById = async (req, res) => {
     const historyRecords =
       await parkingSpotHistoryService.getParkingSpotHistoryById(spotId);
 
-    res.status(200).json({ historyRecords: historyRecords });
+    res.status(200).json({
+      operation: "get-spot-history",
+      istoryRecords: historyRecords,
+      success: true,
+    });
   } catch (error) {
     console.error(
       `Error getting history of parking spot with ID ${spotId}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "get-spot-history",
+      error: error.message,
+      success: false,
+    });
   }
 };

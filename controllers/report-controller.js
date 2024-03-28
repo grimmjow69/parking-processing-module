@@ -10,11 +10,15 @@ exports.saveReport = async (req, res) => {
 
     await reportService.saveReport(userId, reportMessage, category);
     console.log("Report saved succesfully");
-    res.status(200).json({ success: true });
+    res.status(200).json({ operation: "save-report", success: true });
   } catch (error) {
     console.error(
       `Error saving report for user with ID ${userId} in category ${category}: ${error.message}`
     );
-    res.status(500);
+    res.status(500).json({
+      operation: "save-report",
+      error: error.message,
+      success: false,
+    });
   }
 };
