@@ -1,8 +1,8 @@
 const axios = require("axios");
-const ParkingSpotService = require("../services/parking-spot-service");
+const ParkingSpotService = require("./parking-spot-service");
 const db = require("../db-connection");
 const parkingSpotService = new ParkingSpotService(db);
-const NotificationService = require("../services/notification-service");
+const NotificationService = require("./notification-service");
 const notificationService = new NotificationService(db);
 const { Base64 } = require("js-base64");
 

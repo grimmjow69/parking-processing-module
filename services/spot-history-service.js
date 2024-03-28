@@ -49,7 +49,7 @@ class ParkingSpotHistoryService {
       const occupancyCountMap = {};
       rows.forEach((row) => {
         occupancyCountMap[row.name] = {
-          timesOccupied: parseInt(row.times_occupied),
+          weight: parseInt(row.times_occupied),
           longitude: row.longitude,
           latitude: row.latitude,
         };

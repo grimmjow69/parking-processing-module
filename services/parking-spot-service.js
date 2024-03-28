@@ -12,7 +12,7 @@ class ParkingSpotService {
     try {
       const parkingSpots = await this.getAllFreeParkingSpots();
 
-      const closestSpot = geolib.findNearest(
+      const closestFreeSpot = geolib.findNearest(
         { latitude: startLatitude, longitude: startLongitude },
         parkingSpots.map((spot) => ({
           latitude: spot.latitude,
@@ -21,8 +21,9 @@ class ParkingSpotService {
         }))
       );
 
-      const closestParkingSpot = await this.getParkingSpotById(closestSpot.key);
-
+      const closestParkingSpot = await this.getParkingSpotById(
+        closestFreeSpot.key
+      );
       return closestParkingSpot;
     } catch (error) {
       throw new Error(

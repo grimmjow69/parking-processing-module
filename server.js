@@ -9,13 +9,14 @@ app.use(express.json());
 const db = require("./db-connection");
 
 const cron = require("node-cron");
+
 const authRoutes = require("./routes/auth-routes");
 const notificationRoutes = require("./routes/notification-routes");
 const parkingSpotRoutes = require("./routes/parking-spot-routes");
 const userRoutes = require("./routes/user-routes");
 const reportRoutes = require("./routes/report-routes");
 
-const ExternalApiService = require("./services/external-api.service");
+const ExternalApiService = require("./services/external-api-service");
 const DataRetentionService = require("./services/data-retention-service");
 
 const basicAuth = require("express-basic-auth");
@@ -56,7 +57,7 @@ app.use(
   userRoutes
 );
 
-const externalApiService = new ExternalApiService();
+const externalApiService = new ExternalApiService(db);
 const dataRetentionService = new DataRetentionService(db);
 
 app.listen(process.env.PORT, function () {

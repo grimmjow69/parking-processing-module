@@ -14,15 +14,15 @@ exports.getClosestFreeParkingSpot = async (req, res) => {
   const { latitude, longitude } = req.body;
 
   try {
-    const closestSpot = await parkingSpotService.getClosestFreeParkingSpot(
+    const closestFreeSpot = await parkingSpotService.getClosestFreeParkingSpot(
       latitude,
       longitude
     );
 
-    if (closestSpot) {
+    if (closestFreeSpot) {
       res.status(200).json({
         operation: "get-closest-free-spot",
-        closestSpot: closestSpot,
+        closestFreeSpot: closestFreeSpot,
         success: true,
       });
     } else {
@@ -52,13 +52,13 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
     if (favouriteSpot) {
       res.status(200).json({
         operation: "get-user-favourite-spot",
-        avouriteSpot: favouriteSpot,
+        favouriteSpot: favouriteSpot,
         success: true,
       });
     } else {
       res.status(200).json({
         operation: "get-user-favourite-spot",
-        data: null,
+        favouriteSpot: null,
         error: "User has no favourite parking spot",
         success: true,
       });
@@ -245,7 +245,7 @@ exports.getSpotHistoryById = async (req, res) => {
 
     res.status(200).json({
       operation: "get-spot-history",
-      istoryRecords: historyRecords,
+      historyRecords: historyRecords,
       success: true,
     });
   } catch (error) {
