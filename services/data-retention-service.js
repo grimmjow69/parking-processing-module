@@ -6,7 +6,7 @@ class DataRetentionService {
   async cleanUpParkingHistory() {
     const query = `
       DELETE FROM public."parking_spot_histories"
-      WHERE updated_at < NOW() - INTERVAL '3 days';
+      WHERE updated_at < NOW() - INTERVAL '3 days'; 
     `;
 
     try {

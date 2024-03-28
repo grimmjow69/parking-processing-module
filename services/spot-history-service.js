@@ -12,13 +12,15 @@ class ParkingSpotHistoryService {
 
     const values = [parkingSpotId, occupied];
 
-    const { rows } = await this.db.query(query, values);
-    if (rows.length > 0) {
-      return rows[0];
-    } else {
-      throw new Error(
-        `Insertion of new parking spot history failed for parking spot ID ${parkingSpotId}.`
-      );
+    try {
+      const { rows } = await this.db.query(query, values);
+      if (rows.length > 0) {
+        return rows[0];
+      } else {
+        throw new Error("Failed to insert new parking spot history.");
+      }
+    } catch (error) {
+      throw new Error("Failed to insert new parking spot history.");
     }
   }
 
@@ -111,7 +113,7 @@ class ParkingSpotHistoryService {
       }
 
       const currentStatus = rows[0].occupied;
-      var statusChangeEvent = null;
+      let statusChangeEvent = null;
 
       for (let i = 1; i < rows.length; i++) {
         if (rows[i].occupied === currentStatus) {

@@ -15,7 +15,7 @@ class UserService {
         RETURNING user_id;
     `;
 
-    const saltRounds = 7;
+    const saltRounds = process.env.SALT_ROUNDS || 10;
     const hashedPassword = await bcrypt.hash(userDetail.password, saltRounds);
 
     const values = [userDetail.email, hashedPassword];

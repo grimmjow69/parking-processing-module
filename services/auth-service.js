@@ -5,27 +5,30 @@ class AuthService {
     this.db = db;
   }
 
-  async verifyPasswordWithUserId(userId, password) {
-    const query = `
-      SELECT user_id, password
-      FROM public."users"
-      WHERE user_id = $1
-    `;
+  async verifyPassword(query, values, password) {
     try {
-      const values = [userId];
       const { rows } = await this.db.query(query, values);
 
       if (rows.length > 0) {
         const hashedDbPassword = rows[0].password;
         return await bcrypt.compare(password, hashedDbPassword);
       } else {
-        throw new Error(`User with ID ${userId} not found`);
+        throw new Error(`User not found`);
       }
     } catch (error) {
-      throw new Error(
-        `Unable to retrieve user with ID ${userId}: ${error.message}`
-      );
+      console.error(`Unable to retrieve user: ${error.message}`);
+      throw new Error("An error occurred while verifying the password");
     }
+  }
+
+  async verifyPasswordWithUserId(userId, password) {
+    const query = `
+      SELECT user_id, password
+      FROM public."users"
+      WHERE user_id = $1
+    `;
+    const values = [userId];
+    return this.verifyPassword(query, values, password);
   }
 
   async verifyPasswordWithEmail(email, password) {
@@ -34,22 +37,8 @@ class AuthService {
       FROM public."users"
       WHERE email = $1
     `;
-
-    try {
-      const values = [email];
-      const { rows } = await this.db.query(query, values);
-
-      if (rows.length > 0) {
-        const hashedDbPassword = rows[0].password;
-        return await bcrypt.compare(password, hashedDbPassword);
-      } else {
-        throw new Error(`User with email ${email} not found`);
-      }
-    } catch (error) {
-      throw new Error(
-        `Unable to retrieve user with email ${email}: ${error.message}`
-      );
-    }
+    const values = [email];
+    return this.verifyPassword(query, values, password);
   }
 }
 
