@@ -16,7 +16,9 @@ class ParkingSpotHistoryService {
     if (rows.length > 0) {
       return rows[0];
     } else {
-      throw new Error("Insertion of new parking spot history failed.");
+      throw new Error(
+        `Insertion of new parking spot history failed for parking spot ID ${parkingSpotId}.`
+      );
     }
   }
 
@@ -84,7 +86,7 @@ class ParkingSpotHistoryService {
       }
     } catch (error) {
       throw new Error(
-        `Unable to retrieve parking spot history: ${error.message}`
+        `Unable to retrieve last parking spot history record for parking spot ID ${parkingSpotId}: ${error.message}`
       );
     }
   }
@@ -126,7 +128,7 @@ class ParkingSpotHistoryService {
       }
     } catch (error) {
       throw new Error(
-        `Unable to retrieve the time since the last status change: ${error.message}`
+        `Unable to retrieve the time since the last status change for parking spot ID ${parkingSpotId}: ${error.message}`
       );
     }
   }
@@ -154,7 +156,7 @@ class ParkingSpotHistoryService {
       }
     } catch (error) {
       throw new Error(
-        `Unable to retrieve parking spot history: ${error.message}`
+        `Unable to retrieve parking spot history for parking spot ID ${parkingSpotId}: ${error.message}`
       );
     }
   }

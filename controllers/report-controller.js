@@ -12,7 +12,9 @@ exports.saveReport = async (req, res) => {
     console.log("Report saved succesfully");
     res.status(200).json({ success: true });
   } catch (error) {
-    console.error(`Error saving report`);
+    console.error(
+      `Error saving report for user with ID ${userId} in category ${category}: ${error.message}`
+    );
     res.status(500);
   }
 };

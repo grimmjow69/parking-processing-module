@@ -11,7 +11,9 @@ exports.getParkingSpotHistoryById = async (req, res) => {
       await parkingSpotHistoryService.getParkingSpotHistoryById(spotId);
     res.status(200).json(parkingSpotHistory);
   } catch (error) {
-    console.error(`Error get parking spot history by id: ${error.message}`);
+    console.error(
+      `Error getting history for parking spot with ID ${spotId}: ${error.message}`
+    );
     res.status(500);
   }
 };
@@ -23,7 +25,7 @@ exports.getAllParkingSpotsOccupancyCount = async (req, res) => {
     res.status(200).json(parkingSpotsOccupancyCount);
   } catch (error) {
     console.error(
-      `Error getting all parking spot occupancy count: ${error.message}`
+      `Error getting occupancy count for all parking spots: ${error.message}`
     );
     res.status(500);
   }

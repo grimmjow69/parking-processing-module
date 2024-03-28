@@ -16,11 +16,13 @@ exports.getUserProfileById = async (req, res) => {
     if (user) {
       res.status(200).json({ user });
     } else {
-      console.log(`User: ${userId} not found`);
-      res.status(404).json({ error: "User not found" });
+      console.log(`User with ID ${userId} not found`);
+      res.status(404).json({ error: `User with ID ${userId} not found` });
     }
   } catch (error) {
-    console.error(`Error getting user profile: ${userId} - ${error.message}`);
+    console.error(
+      `Error getting profile for user with ID ${userId}: ${error.message}`
+    );
     res.status(500);
   }
 };
@@ -34,17 +36,19 @@ exports.updateUserPassword = async (req, res) => {
     );
 
     if (!passwordCheck) {
-      res
-        .status(401)
-        .json({ success: false, error: "Password verification failed" });
+      res.status(401).json({
+        success: false,
+      });
     } else {
       const result = await userService.updateUserPassword(userId, newPassword);
-      res
-        .status(200)
-        .json({ success: result, message: "Password updated succesfully" });
+      res.status(200).json({
+        success: result,
+      });
     }
   } catch (error) {
-    console.error(`Error updating user password - ${error.message}`);
+    console.error(
+      `Error updating password for user with ID ${userId}: ${error.message}`
+    );
     res.status(500);
   }
 };
@@ -59,25 +63,27 @@ exports.updateUserEmail = async (req, res) => {
     );
 
     if (!passwordCheck) {
-      return res
-        .status(401)
-        .json({ success: false, error: "Password verification failed" });
+      return res.status(401).json({
+        success: false,
+      });
     }
 
     const emailCheck = await userService.getUserByEmail(newEmail);
 
     if (emailCheck) {
-      return res
-        .status(409)
-        .json({ success: false, error: "Email already in use" });
+      return res.status(409).json({
+        success: false,
+      });
     } else {
       await userService.updateUserEmail(userId, newEmail);
-      return res
-        .status(200)
-        .json({ success: true, message: "Email updated successfully" });
+      return res.status(200).json({
+        success: true,
+      });
     }
   } catch (error) {
-    console.error(`Error updating user email - ${error.message}`);
+    console.error(
+      `Error updating email for user with ID ${userId}: ${error.message}`
+    );
     return res
       .status(500)
       .json({ success: false, error: "Internal server error" });
@@ -90,12 +96,12 @@ exports.setFavouriteParkingSpot = async (req, res) => {
 
     await userService.updateUsersFavouriteSpot(userId, spotId);
     console.log(
-      `User: ${userId} favourite parking spot: ${spotId} set successfully`
+      `User with ID ${userId} set parking spot with ID ${spotId} as favourite successfully`
     );
     res.status(200).json({ success: true });
   } catch (error) {
     console.error(
-      `Error setting favourite parking spot: ${spotId} of user: ${userId} - ${error.message}`
+      `Error setting parking spot with ID ${spotId} as favourite for user with ID ${userId}: ${error.message}`
     );
     res.status(500);
   }
@@ -108,14 +114,16 @@ exports.deleteUser = async (req, res) => {
     const deleted = await userService.deleteUser(userId);
 
     if (deleted) {
-      console.log(`User: ${userId} deleted successfuly`);
+      console.log(`User with ID ${userId} deleted successfully`);
       res.status(200).json({ success: true });
     } else {
-      console.log(`User: ${userId} not found`);
+      console.log(`User with ID ${userId} not found`);
       res.status(404);
     }
   } catch (error) {
-    console.error(`Error while deleting user: ${error.message}`);
+    console.error(
+      `Error while deleting user with ID ${userId}: ${error.message}`
+    );
     res.status(500);
   }
 };

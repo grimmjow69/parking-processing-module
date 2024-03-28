@@ -19,10 +19,12 @@ class AuthService {
         const hashedDbPassword = rows[0].password;
         return await bcrypt.compare(password, hashedDbPassword);
       } else {
-        throw new Error(`User not found`);
+        throw new Error(`User with ID ${userId} not found`);
       }
     } catch (error) {
-      throw new Error(`Unable to retrieve user by user id: ${error.message}`);
+      throw new Error(
+        `Unable to retrieve user with ID ${userId}: ${error.message}`
+      );
     }
   }
 
@@ -41,10 +43,12 @@ class AuthService {
         const hashedDbPassword = rows[0].password;
         return await bcrypt.compare(password, hashedDbPassword);
       } else {
-        throw new Error(`userNotFound`);
+        throw new Error(`User with email ${email} not found`);
       }
     } catch (error) {
-      throw new Error(`userNotFound}`);
+      throw new Error(
+        `Unable to retrieve user with email ${email}: ${error.message}`
+      );
     }
   }
 }

@@ -24,7 +24,9 @@ class UserService {
       const { rows } = await this.db.query(query, values);
       return rows[0].user_id;
     } catch (error) {
-      throw new Error(`Unable to add user: ${error.message}`);
+      throw new Error(
+        `Unable to register new user with email ${userDetail.email}: ${error.message}`
+      );
     }
   }
 
@@ -39,7 +41,9 @@ class UserService {
       const { rows } = await this.db.query(query, values);
       return rows.length > 0;
     } catch (error) {
-      throw new Error(`Unexpected error: ${error.message}`);
+      throw new Error(
+        `Unable to check if credentials are taken for email ${email}: ${error.message}`
+      );
     }
   }
 
@@ -54,7 +58,9 @@ class UserService {
       const result = await this.db.query(query, values);
       return result.rowCount > 0;
     } catch (error) {
-      throw new Error(`Unable to delete user: ${error.message}`);
+      throw new Error(
+        `Unable to delete user with ID ${userId}: ${error.message}`
+      );
     }
   }
 
@@ -70,7 +76,9 @@ class UserService {
       await this.db.query(query, values);
       return true;
     } catch (error) {
-      throw new Error(`Unable to update user favourite spot: ${error.message}`);
+      throw new Error(
+        `Unable to update favourite spot for user with ID ${userId} to spot ID ${favouriteSpotId}: ${error.message}`
+      );
     }
   }
 
@@ -113,7 +121,9 @@ class UserService {
       await this.db.query(query, values);
       return true;
     } catch (error) {
-      throw new Error(`Unable to update user email: ${error.message}`);
+      throw new Error(
+        `Unable to update password for user with ID ${userId}: ${error.message}`
+      );
     }
   }
 
@@ -131,7 +141,9 @@ class UserService {
       await this.db.query(query, values);
       return true;
     } catch (error) {
-      throw new Error(`Unable to update user password: ${error.message}`);
+      throw new Error(
+        `Unable to update email for user with ID ${userId} to ${newEmail}: ${error.message}`
+      );
     }
   }
 
@@ -158,7 +170,9 @@ class UserService {
         return null;
       }
     } catch (error) {
-      throw new Error(`Unable to retrieve user by user id: ${error.message}`);
+      throw new Error(
+        `Unable to retrieve user with ID ${userId}: ${error.message}`
+      );
     }
   }
 
@@ -187,7 +201,7 @@ class UserService {
       }
     } catch (error) {
       throw new Error(
-        `Unable to retrieve user by users email: ${error.message}`
+        `Unable to retrieve user with email ${userEmail}: ${error.message}`
       );
     }
   }

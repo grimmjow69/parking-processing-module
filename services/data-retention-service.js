@@ -14,7 +14,7 @@ class DataRetentionService {
       return result.rowCount > 0;
     } catch (error) {
       throw new Error(
-        `Unable to clean up history of parking spots: ${error.message}`
+        `Unable to clean up history of parking spots older than 3 days: ${error.message}`
       );
     }
   }

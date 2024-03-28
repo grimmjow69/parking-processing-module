@@ -26,7 +26,7 @@ class ParkingSpotService {
       return closestParkingSpot;
     } catch (error) {
       throw new Error(
-        `Unable to find closest free parking spot: ${error.message}`
+        `Unable to find closest free parking spot from coordinates (${startLatitude}, ${startLongitude}): ${error.message}`
       );
     }
   }
@@ -57,7 +57,7 @@ class ParkingSpotService {
       }
     } catch (error) {
       throw new Error(
-        `Unable to retrieve coordinates of parking spot: ${error.message}`
+        `Unable to retrieve coordinates of parking spot with ID ${spotId}: ${error.message}`
       );
     }
   }
@@ -122,7 +122,9 @@ class ParkingSpotService {
         return null;
       }
     } catch (error) {
-      throw new Error(`Unable to retrieve parking spot: ${error.message}`);
+      throw new Error(
+        `Unable to retrieve state of parking spot with ID ${spotId}: ${error.message}`
+      );
     }
   }
 
@@ -143,7 +145,7 @@ class ParkingSpotService {
       return true;
     } catch (error) {
       throw new Error(
-        `Unable to update parking spot occupancy: ${error.message}`
+        `Unable to update occupancy of parking spot with ID ${parkingSpotId}: ${error.message}`
       );
     }
   }
@@ -177,7 +179,7 @@ class ParkingSpotService {
       return null;
     } catch (error) {
       throw new Error(
-        `Unable to retrieve user's favourite parking spot: ${error.message}`
+        `Unable to retrieve favourite parking spot of user with ID ${userId}: ${error.message}`
       );
     }
   }
@@ -204,7 +206,9 @@ class ParkingSpotService {
         return null;
       }
     } catch (error) {
-      throw new Error(`Unable to retrieve parking spot: ${error.message}`);
+      throw new Error(
+        `Unable to retrieve parking spot with name "${spotName}": ${error.message}`
+      );
     }
   }
 
@@ -237,7 +241,7 @@ class ParkingSpotService {
     }
   }
 
-  async getLastDateOfLastSuccessfulUpdate () {
+  async getLastDateOfLastSuccessfulUpdate() {
     const query = `
       SELECT
         updated_at
@@ -257,7 +261,7 @@ class ParkingSpotService {
       }
     } catch (error) {
       throw new Error(
-        `Unable to retrieve last sucessfuly execution of detection: ${error.message}`
+        `Unable to retrieve last successful execution of detection: ${error.message}`
       );
     }
   }

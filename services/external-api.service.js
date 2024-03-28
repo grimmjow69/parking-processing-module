@@ -29,7 +29,7 @@ class ExternalApiService {
       return response.data;
     } catch (error) {
       console.error(
-        `Failed to fetch and update parking spots data - ${error.message}`
+        `Failed to fetch updated parking spots data from external API: ${error.message}`
       );
       throw error;
     }
@@ -57,7 +57,9 @@ class ExternalApiService {
       await notificationService.sendPushNotifications();
     } catch (error) {
       this.updateLastDetectionMetadata(false);
-      console.error("Error while updating parking spots:", error.message);
+      console.error(
+        `Error while updating parking spots with new data from external API: ${error.message}`
+      );
     }
   }
 
@@ -72,7 +74,7 @@ class ExternalApiService {
       await this.db.query(query, values);
     } catch (error) {
       console.error(
-        `Unable to update last detection metadata: ${error.message}`
+        `Unable to update last detection metadata in the database: ${error.message}`
       );
     }
   }

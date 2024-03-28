@@ -21,7 +21,7 @@ class ReportService {
       return true;
     } catch (error) {
       throw new Error(
-        `Unable to find closest free parking spot: ${error.message}`
+        `Unable to save report for user with ID ${userId} in category ${category}: ${error.message}`
       );
     }
   }

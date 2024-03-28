@@ -41,14 +41,16 @@ exports.loginUser = async (req, res) => {
     );
     if (passwordVerified) {
       const userData = await userService.getUserByEmail(email);
-      console.log(`Login - SUCCESS`);
+      console.log(
+        `Login - SUCCESS: User with email ${email} logged in successfully`
+      );
       return res.status(200).json({ success: true, user: userData });
     } else {
       console.log(`Login - FAILED`);
       return res.status(401).json({ success: false });
     }
   } catch (error) {
-    console.error(`Error while user login: ${error}`);
+    console.error(`Error while logging in, user with email ${email}: ${error}`);
     res.status(500).json({ success: false });
   }
 };
@@ -63,14 +65,20 @@ exports.verifyPassword = async (req, res) => {
 
   try {
     if (passwordVerified) {
-      console.log(`Verify of user ${userId} - SUCCESS`);
+      console.log(
+        `Password verification - SUCCESS: User with ID ${userId} verified successfully`
+      );
       return res.status(200).json({ passwordVerified: true });
     } else {
-      console.log(`Verify of user ${userId} - FAILED`);
+      console.log(
+        `Password verification - FAILED: Incorrect password for user with ID ${userId}`
+      );
       return res.status(401).json({ passwordVerified: false });
     }
   } catch (error) {
-    console.error(`Error while verifing password: ${error}`);
+    console.error(
+      `Error while verifying password for user with ID ${userId}: ${error}`
+    );
     res.status(500);
   }
 };

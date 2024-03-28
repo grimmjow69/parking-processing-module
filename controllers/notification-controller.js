@@ -7,11 +7,15 @@ exports.registerPushToken = async (req, res) => {
   try {
     const userId = req.body.userId;
     const pushToken = req.body.token;
-    const result = await notificationService.savePushToken(userId, pushToken);
-    console.log(`Sucefuly register push token of user: ${userId}`);
+    await notificationService.savePushToken(userId, pushToken);
+    console.log(
+      `Successfully registered push token for user with ID: ${userId}`
+    );
     res.status(201).json({ success: true });
   } catch (error) {
-    console.error(`Error while registering push token: ${error.message}`);
+    console.error(
+      `Error while registering push token for user with ID ${userId}: ${error.message}`
+    );
     res.status(500);
   }
 };
@@ -20,10 +24,12 @@ exports.deletePushToken = async (req, res) => {
   try {
     const userId = req.body.userId;
     await notificationService.deletePushToken(userId);
-    console.log(`Sucefuly deleted push token of user: ${userId}`);
+    console.log(`Successfully deleted push token for user with ID: ${userId}`);
     res.status(200).json({ success: true });
   } catch (error) {
-    console.error(`Error while deleting push token: ${error.message}`);
+    console.error(
+      `Error while deleting push token for user with ID ${userId}: ${error.message}`
+    );
     res.status(500);
   }
 };
@@ -34,11 +40,13 @@ exports.subscribeToNotification = async (req, res) => {
     await notificationService.subscribeNotification(parkingSpotId, userId);
 
     console.log(
-      `User: ${userId} succesfuly subscribed for notification of parking spot with id: ${parkingSpotId}`
+      `User with ID ${userId} successfully subscribed for notification of parking spot with ID: ${parkingSpotId}`
     );
     res.status(201).json({ success: true });
   } catch (error) {
-    console.error(`Error subscribing to notification: ${error.message}`);
+    console.error(
+      `Error subscribing user with ID ${userId} to notification for parking spot with ID ${parkingSpotId}: ${error.message}`
+    );
     res.status(500);
   }
 };
@@ -82,11 +90,13 @@ exports.unsubscribeFromNotificationByUserAndParkingSpotId = async (
       parkingSpotId
     );
     console.log(
-      `User: ${userId} succesfuly unsubscribed from notification of parking spot with id: ${parkingSpotId}`
+      `User with ID ${userId} successfully unsubscribed from notification for parking spot with ID: ${parkingSpotId}`
     );
     res.status(200).json({ success: true });
   } catch (error) {
-    console.error(`Error unsubscribing from notifications: ${error.message}`);
+    console.error(
+      `Error unsubscribing user with ID ${userId} from notifications for parking spot with ID ${parkingSpotId}: ${error.message}`
+    );
     res.status(500);
   }
 };

@@ -26,7 +26,9 @@ class NotificationService {
       await this.db.query(query, values);
       return true;
     } catch (error) {
-      throw new Error(`Unable to save push token: ${error.message}`);
+      throw new Error(
+        `Unable to save push token for user with ID ${userId}: ${error.message}`
+      );
     }
   }
 
@@ -42,7 +44,9 @@ class NotificationService {
       await this.db.query(query, values);
       return true;
     } catch (error) {
-      throw new Error(`Unable to delete push token: ${error.message}`);
+      throw new Error(
+        `Unable to delete push token for user with ID ${userId}: ${error.message}`
+      );
     }
   }
 
@@ -90,7 +94,7 @@ class NotificationService {
         let ticketChunk = await expo.sendPushNotificationssAsync(chunk);
         tickets.push(...ticketChunk);
       } catch (error) {
-        console.error(error);
+        console.error(`Error while sending push notifications: ${error}`);
       }
     }
     return tickets;
@@ -111,7 +115,9 @@ class NotificationService {
         return null;
       }
     } catch (error) {
-      throw new Error(`Unable to add new notification: ${error.message}`);
+      throw new Error(
+        `Unable to subscribe user with ID ${userId} to notifications for parking spot with ID ${parkingSpotId}: ${error.message}`
+      );
     }
   }
 
@@ -126,7 +132,9 @@ class NotificationService {
       await this.db.query(query, values);
       return true;
     } catch (error) {
-      throw new Error(`Unable to delete notification: ${error.message}`);
+      throw new Error(
+        `Unable to unsubscribe from notification with ID ${notificationId}: ${error.message}`
+      );
     }
   }
   async deleteNotificationsByUserId(userId) {
@@ -140,7 +148,9 @@ class NotificationService {
       await this.db.query(query, values);
       return true;
     } catch (error) {
-      throw new Error(`Unable to delete user notifications: ${error.message}`);
+      throw new Error(
+        `Unable to delete notifications for user with ID ${userId}: ${error.message}`
+      );
     }
   }
 
@@ -163,7 +173,7 @@ class NotificationService {
       }));
     } catch (error) {
       throw new Error(
-        `Unable to retrieve user notifications: ${error.message}`
+        `Unable to retrieve notifications for user with ID ${userId}: ${error.message}`
       );
     }
   }
@@ -189,7 +199,9 @@ class NotificationService {
         return false;
       }
     } catch (error) {
-      throw new Error(`Unable to delete notification: ${error.message}`);
+      throw new Error(
+        `Unable to delete notification for user with ID ${userId} and parking spot with ID ${parkingSpotId}: ${error.message}`
+      );
     }
   }
 }

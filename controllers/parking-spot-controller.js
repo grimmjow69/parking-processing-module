@@ -25,7 +25,9 @@ exports.getClosestFreeParkingSpot = async (req, res) => {
       res.status(404).json({ error: "No free parking spot found" });
     }
   } catch (error) {
-    console.error(`Error while finding closest spot: ${error.message}`);
+    console.error(
+      `Error while finding closest free parking spot from coordinates (${latitude}, ${longitude}): ${error.message}`
+    );
     res.status(500);
   }
 };
@@ -42,7 +44,7 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      `Error getting user's favourite parking spot: ${error.message}`
+      `Error getting favourite parking spot for user with ID ${userId}: ${error.message}`
     );
     res.status(500);
   }
@@ -69,7 +71,9 @@ exports.getAllFreeParkingSpots = async (req, res) => {
     const freeParkingSpots = await parkingSpotService.getAllFreeParkingSpots();
     res.status(200).json(freeParkingSpots);
   } catch (error) {
-    console.error(`Error while getting all free spot: ${error.message}`);
+    console.error(
+      `Error while getting all free parking spots: ${error.message}`
+    );
     res.status(500);
   }
 };
@@ -82,7 +86,7 @@ exports.getParkingSpotCoordinates = async (req, res) => {
     res.status(200).json(spotCoordinates);
   } catch (error) {
     console.error(
-      `Error while geting coordinates of spot ${spotId} - ${error.message}`
+      `Error while getting coordinates of parking spot with ID ${spotId}: ${error.message}`
     );
     res.status(500);
   }
@@ -99,7 +103,7 @@ exports.getParkingSpotById = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      `Error while geting parking spoty by id ${spotId} - ${error.message}`
+      `Error while getting parking spot by ID ${spotId}: ${error.message}`
     );
     res.status(500);
   }
@@ -116,7 +120,7 @@ exports.getParkingSpotByName = async (req, res) => {
     }
   } catch (error) {
     console.error(
-      `Error getting detail of spot: ${spotId} error: ${error.message}`
+      `Error getting parking spot by name ${spotName}: ${error.message}`
     );
     res.status(500);
   }
@@ -159,7 +163,7 @@ exports.getSpotDetailById = async (req, res) => {
     res.status(200).json({ data: result });
   } catch (error) {
     console.error(
-      `Error getting detail of spot: ${spotId} error: ${error.message}`
+      `Error getting detail of parking spot with ID ${spotId} for user with ID ${userId}: ${error.message}`
     );
     res.status(500);
   }
@@ -175,7 +179,7 @@ exports.getSpotHistoryById = async (req, res) => {
     res.status(200).json({ historyRecords: historyRecords });
   } catch (error) {
     console.error(
-      `Error getting detail of spot: ${spotId} error: ${error.message}`
+      `Error getting history of parking spot with ID ${spotId}: ${error.message}`
     );
     res.status(500);
   }
