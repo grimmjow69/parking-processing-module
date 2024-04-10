@@ -31,7 +31,7 @@ exports.getAllParkingSpotsOccupancyCount = async (req, res) => {
     const parkingSpotsOccupancyCount =
       await parkingSpotHistoryService.getHistoryOccupancyCount();
     res.status(200).json({
-      operation: "get-all-occupancy-count",
+      operation: "heatmap-generation",
       parkingSpotsOccupancyCount: parkingSpotsOccupancyCount,
       success: true,
     });
@@ -40,7 +40,7 @@ exports.getAllParkingSpotsOccupancyCount = async (req, res) => {
       `Error getting occupancy count for all parking spots: ${error.message}`
     );
     res.status(500).json({
-      operation: "get-all-occupancy-count",
+      operation: "heatmap-generation",
       error: error.message,
       success: false,
     });

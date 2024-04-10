@@ -28,10 +28,9 @@ class ExternalApiService {
       const response = await this.apiClient.get("/get_parking_occupancy");
       return response.data;
     } catch (error) {
-      console.error(
+      throw new Error(
         `Failed to fetch updated parking spots data from external API: ${error.message}`
       );
-      throw error;
     }
   }
 
@@ -57,7 +56,7 @@ class ExternalApiService {
       await notificationService.sendPushNotifications();
     } catch (error) {
       this.updateLastDetectionMetadata(false);
-      console.error(
+      throw new Error(
         `Error while updating parking spots with new data from external API: ${error.message}`
       );
     }
@@ -73,7 +72,7 @@ class ExternalApiService {
     try {
       await this.db.query(query, values);
     } catch (error) {
-      console.error(
+      throw new Error(
         `Unable to update last detection metadata in the database: ${error.message}`
       );
     }

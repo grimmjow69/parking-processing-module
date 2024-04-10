@@ -156,7 +156,7 @@ class NotificationService {
 
   async getAllUserNotifications(userId) {
     const query = `
-      SELECT nf.notification_id, ps.name AS parking_spot_name, nf.parking_spot_id
+      SELECT nf.notification_id, ps.name AS parking_spot_name
       FROM public."notifications" nf
       LEFT JOIN public."parking_spots" ps
       ON ps.parking_spot_id = nf.parking_spot_id
@@ -168,7 +168,6 @@ class NotificationService {
       const { rows } = await this.db.query(query, values);
       return rows.map((row) => ({
         notificationId: row.notification_id,
-        parkingSpotId: row.parking_spot_id,
         parkingSpotName: row.parking_spot_name,
       }));
     } catch (error) {

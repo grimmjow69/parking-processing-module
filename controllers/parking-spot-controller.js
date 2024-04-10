@@ -56,7 +56,7 @@ exports.getUserFavouriteParkingSpot = async (req, res) => {
         success: true,
       });
     } else {
-      res.status(200).json({
+      res.status(404).json({
         operation: "get-user-favourite-spot",
         favouriteSpot: null,
         error: "User has no favourite parking spot",
@@ -145,6 +145,11 @@ exports.getParkingSpotById = async (req, res) => {
     const parkingSpot = await parkingSpotService.getParkingSpotById(spotId);
     if (parkingSpot) {
       res.json(parkingSpot);
+      res.status(200).json({
+        operation: "get-spot-by-id",
+        parkingSpot: parkingSpot,
+        success: true,
+      });
     } else {
       res.status(404).json({
         operation: "get-spot-by-id",
@@ -169,7 +174,11 @@ exports.getParkingSpotByName = async (req, res) => {
   try {
     const parkingSpot = await parkingSpotService.getParkingSpotByName(spotName);
     if (parkingSpot) {
-      res.json(parkingSpot);
+      res.status(200).json({
+        operation: "get-spot-by-name",
+        parkingSpot: parkingSpot,
+        success: true,
+      });
     } else {
       res.status(404).json({
         operation: "get-spot-by-name",

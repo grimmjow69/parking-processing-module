@@ -64,7 +64,7 @@ class ParkingSpotHistoryService {
 
   async getLastParkingSpotHistoryRecord(parkingSpotId) {
     const query = `
-      SELECT history_id, parking_spot_id, occupied, occupied_since, updated_at
+      SELECT history_id, parking_spot_id, occupied, updated_at
       FROM public."parking_spot_histories"
       WHERE parking_spot_id = $1
       ORDER BY updated_at DESC
@@ -137,7 +137,7 @@ class ParkingSpotHistoryService {
 
   async getParkingSpotHistoryById(parkingSpotId) {
     const query = `
-      SELECT history_id, parking_spot_id, occupied, occupied_since, updated_at
+      SELECT history_id, parking_spot_id, occupied, updated_at
       FROM public."parking_spot_histories"
       WHERE parking_spot_id = $1
       ORDER BY updated_at desc
@@ -150,7 +150,6 @@ class ParkingSpotHistoryService {
       if (rows.length > 0) {
         return rows.map((row) => ({
           occupied: row.occupied,
-          occupiedSince: row.occupied_since,
           updatedAt: row.updated_at,
         }));
       } else {

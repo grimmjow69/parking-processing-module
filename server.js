@@ -1,25 +1,43 @@
 const dotenv = require("dotenv");
-dotenv.config();
-
 const express = require("express");
-const app = express();
-
-app.use(express.json());
-
-const db = require("./db-connection");
-
 const cron = require("node-cron");
-
+const basicAuth = require("express-basic-auth");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+const db = require("./db-connection");
 const authRoutes = require("./routes/auth-routes");
 const notificationRoutes = require("./routes/notification-routes");
 const parkingSpotRoutes = require("./routes/parking-spot-routes");
 const userRoutes = require("./routes/user-routes");
 const reportRoutes = require("./routes/report-routes");
-
 const ExternalApiService = require("./services/external-api-service");
 const DataRetentionService = require("./services/data-retention-service");
 
-const basicAuth = require("express-basic-auth");
+dotenv.config();
+const app = express();
+app.use(express.json());
+
+const externalApiService = new ExternalApiService(db);
+const dataRetentionService = new DataRetentionService(db);
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "PPM API",
+      version: "1.0.0",
+      description: "Parking-processing-module API documentation",
+    },
+    servers: [
+      {
+        url: `http://localhost:${process.env.PORT}`,
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+
+const swaggerSpecs = swaggerJSDoc(swaggerOptions);
 
 app.use(
   "/auth",
@@ -57,8 +75,7 @@ app.use(
   userRoutes
 );
 
-const externalApiService = new ExternalApiService(db);
-const dataRetentionService = new DataRetentionService(db);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.listen(process.env.PORT, function () {
   console.log(`Server running on port ${process.env.PORT}`);

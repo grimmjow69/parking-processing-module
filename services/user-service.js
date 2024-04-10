@@ -181,7 +181,7 @@ class UserService {
 
   async getUserByEmail(userEmail) {
     const query = `
-      SELECT user_id, email,  created_at, updated_at, favourite_spot_id
+      SELECT user_id, email, created_at, updated_at, favourite_spot_id
       FROM public."users"
       WHERE email = $1
     `;
@@ -194,7 +194,6 @@ class UserService {
         return {
           userId: row.user_id,
           email: row.email,
-          password: null,
           createdAt: row.created_at,
           updatedAt: row.updated_at,
           favouriteSpotId: row.favourite_spot_id,
