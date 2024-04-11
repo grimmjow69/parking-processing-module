@@ -6,7 +6,7 @@ class DataRetentionService {
   async cleanUpParkingHistory() {
     const query = `
       DELETE FROM public."parking_spot_histories"
-      WHERE updated_at < NOW() - INTERVAL '3 days'; 
+      WHERE updated_at < NOW() - INTERVAL '7 days'; 
     `;
 
     try {
@@ -14,7 +14,7 @@ class DataRetentionService {
       return result.rowCount > 0;
     } catch (error) {
       throw new Error(
-        `Unable to clean up history of parking spots older than 3 days: ${error.message}`
+        `Unable to clean up history of parking spots older than 7 days: ${error.message}`
       );
     }
   }
