@@ -55,7 +55,7 @@ class NotificationService {
     const users = await userService.getAllUsers();
 
     for (let user of users) {
-      if (!Expo.isExpoPushToken(user.pushToken)) {
+      if (user.pushToken === null || !Expo.isExpoPushToken(user.pushToken)) {
         continue;
       }
 
@@ -69,12 +69,12 @@ class NotificationService {
               notification.parkingSpotId
             );
 
-          const state =
-            actualSpotState.occupied !== null
-              ? actualSpotState.occupied
-              : "unified";
+          if (actualSpotState !== null) {
+            const state =
+              actualSpotState.occupied !== null
+                ? actualSpotState.occupied
+                : "unified";
 
-          if (actualSpotState) {
             messageContent += `${actualSpotState.name} - occupied: ${state}\n`;
           }
         }
@@ -91,7 +91,7 @@ class NotificationService {
     let chunks = expo.chunkPushNotifications(messages);
     for (let chunk of chunks) {
       try {
-        let ticketChunk = await expo.sendPushNotificationssAsync(chunk);
+        let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
         tickets.push(...ticketChunk);
       } catch (error) {
         console.error(`Error while sending push notifications: ${error}`);
@@ -156,7 +156,7 @@ class NotificationService {
 
   async getAllUserNotifications(userId) {
     const query = `
-      SELECT nf.notification_id, ps.name AS parking_spot_name
+      SELECT nf.notification_id, ps.name AS parking_spot_name, nf.parking_spot_id
       FROM public."notifications" nf
       LEFT JOIN public."parking_spots" ps
       ON ps.parking_spot_id = nf.parking_spot_id
@@ -168,6 +168,7 @@ class NotificationService {
       const { rows } = await this.db.query(query, values);
       return rows.map((row) => ({
         notificationId: row.notification_id,
+        parkingSpotId: row.parking_spot_id,
         parkingSpotName: row.parking_spot_name,
       }));
     } catch (error) {

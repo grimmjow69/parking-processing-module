@@ -268,3 +268,55 @@ exports.getSpotHistoryById = async (req, res) => {
     });
   }
 };
+
+exports.createParkingSpot = async (req, res) => {
+  try {
+    const { name, latitude, longitude } = req.body;
+
+    const newParkingSpot = await parkingSpotService.createParkingSpot(
+      name,
+      latitude,
+      longitude
+    );
+
+    res.status(201).json({
+      operation: "create-parking-spot",
+      parkingSpot: newParkingSpot,
+      success: true,
+    });
+  } catch (error) {
+    console.error(`Error creating parking spot: ${error.message}`);
+    res.status(500).json({
+      operation: "create-parking-spot",
+      error: error.message,
+      success: false,
+    });
+  }
+};
+
+exports.updateParkingSpotCoordinates = async (req, res) => {
+  try {
+    const spotId = req.params.spotId;
+    const { latitude, longitude } = req.body;
+
+    await parkingSpotService.updateParkingSpotCoordinates(
+      spotId,
+      latitude,
+      longitude
+    );
+
+    res.status(200).json({
+      operation: "update-coordinates",
+      success: true,
+    });
+  } catch (error) {
+    console.error(
+      `Error updating coordinates for parking spot with ID ${spotId}: ${error.message}`
+    );
+    res.status(500).json({
+      operation: "update-coordinates",
+      error: error.message,
+      success: false,
+    });
+  }
+};

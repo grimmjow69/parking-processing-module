@@ -93,13 +93,15 @@ router.post("/subscribe-notification", notificationController.subscribeToNotific
  *                         type: string
  *                       parkingSpotName:
  *                         type: string
+ *                       parkingSpotId:
+ *                         type: string
  *                 success:
  *                   type: boolean
  *             example:
  *               operation: "get-user-notifications"
  *               userNotifications: [
- *                 { notificationId: "1", parkingSpotName: "Parking Spot 1" },
- *                 { notificationId: "2", parkingSpotName: "Parking Spot 2" }
+ *                 { notificationId: "1", parkingSpotName: "Parking Spot 1", parkingSpotId: "1"},
+ *                 { notificationId: "2", parkingSpotName: "Parking Spot 2", parkingSpotId: "2"}
  *               ]
  *               success: true
  *       500:

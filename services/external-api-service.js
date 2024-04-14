@@ -34,24 +34,24 @@ class ExternalApiService {
     }
   }
 
-  async updateParkingLotsWithNewData() {
+  async updateParkingSpotsWithNewData() {
     try {
       const newParkingSpotStates = await this.fetchUpdatedParkingSpots();
-
       for (const spots of Object.values(newParkingSpotStates)) {
         for (const spotData of spots) {
           const parkingSpot = await parkingSpotService.getParkingSpotByName(
             spotData.name
           );
-
           if (parkingSpot) {
             await parkingSpotService.updateParkingSpotOccupancy(
               parkingSpot.parkingSpotId,
+              parkingSpot.occupied,
               spotData.occupied
             );
           }
         }
       }
+
       this.updateLastDetectionMetadata(true);
       await notificationService.sendPushNotifications();
     } catch (error) {

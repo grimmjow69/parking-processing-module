@@ -129,7 +129,7 @@ class ParkingSpotService {
     }
   }
 
-  async updateParkingSpotOccupancy(parkingSpotId, occupied) {
+  async updateParkingSpotOccupancy(parkingSpotId, previousState, occupied) {
     const query = `
       UPDATE public."parking_spots"
       SET occupied = $1, updated_at = CURRENT_TIMESTAMP
@@ -139,11 +139,12 @@ class ParkingSpotService {
 
     try {
       await this.db.query(query, values);
-      await parkingSpotHistoryService.updateParkingSpotHistory(
-        parkingSpotId,
-        occupied
-      );
-      return true;
+      if (previousState !== occupied) {
+        await parkingSpotHistoryService.addSpotHistoryRecord(
+          parkingSpotId,
+          occupied
+        );
+      }
     } catch (error) {
       throw new Error(
         `Unable to update occupancy of parking spot with ID ${parkingSpotId}: ${error.message}`
@@ -292,6 +293,65 @@ class ParkingSpotService {
     } catch (error) {
       throw new Error(
         `Unable to retrieve all free parking spots: ${error.message}`
+      );
+    }
+  }
+
+  async createParkingSpot(name, latitude, longitude) {
+    const query = `
+      INSERT INTO public."parking_spots" (name, occupied)
+      VALUES ($1, false)
+      RETURNING parking_spot_id
+    `;
+    const values = [name];
+
+    try {
+      const { rows } = await this.db.query(query, values);
+      const parkingSpotId = rows[0].parking_spot_id;
+      await this.createParkingSpotCoordinates(
+        parkingSpotId,
+        latitude,
+        longitude
+      );
+      return parkingSpotId;
+    } catch (error) {
+      throw new Error(
+        `Unable to create parking spot with name "${name}": ${error.message}`
+      );
+    }
+  }
+
+  async createParkingSpotCoordinates(parkingSpotId, latitude, longitude) {
+    const query = `
+      INSERT INTO public."parking_spot_coordinates" (parking_spot_id, coordinates)
+      VALUES ($1, POINT($2, $3))
+    `;
+
+    const values = [parkingSpotId, latitude, longitude];
+
+    try {
+      await this.db.query(query, values);
+    } catch (error) {
+      throw new Error(
+        `Unable to create coordinates for parking spot with ID ${parkingSpotId}: ${error.message}`
+      );
+    }
+  }
+
+  async updateParkingSpotCoordinates(parkingSpotId, latitude, longitude) {
+    const query = `
+      UPDATE public."parking_spot_coordinates"
+      SET coordinates = POINT($1, $2)
+      WHERE parking_spot_id = $3
+    `;
+
+    const values = [latitude, longitude, parkingSpotId];
+
+    try {
+      await this.db.query(query, values);
+    } catch (error) {
+      throw new Error(
+        `Unable to update coordinates for parking spot with ID ${parkingSpotId}: ${error.message}`
       );
     }
   }
