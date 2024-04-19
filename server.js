@@ -129,7 +129,7 @@ cron.schedule("59 23 * * 6", async () => {
 });
 
 // At every 1st minute past every hour from 6 through 18 on every day-of-week from Monday through Friday.
-cron.schedule("*/1 6-18 * * 1-5", async () => {
+cron.schedule("*/2 6-18 * * 1-5", async () => {
   try {
     await externalApiService.updateParkingSpotsWithNewData();
     console.log("Parking spots updated successfully");
