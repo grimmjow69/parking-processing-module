@@ -1,6 +1,8 @@
+const { pool } = require("../db-connection");
+
 class ParkingSpotHistoryService {
-  constructor(db) {
-    this.db = db;
+  constructor() {
+    this.db = pool;
   }
 
   async addSpotHistoryRecord(parkingSpotId, occupied) {

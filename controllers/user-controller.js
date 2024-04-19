@@ -2,11 +2,11 @@ const UserService = require("../services/user-service");
 const AuthService = require("../services/auth-service");
 const NotificationService = require("../services/notification-service");
 
-const db = require("../db-connection");
+const { pool } = require("../db-connection");
 
-const userService = new UserService(db);
-const authService = new AuthService(db);
-const notificationService = new NotificationService(db);
+const userService = new UserService();
+const authService = new AuthService();
+const notificationService = new NotificationService();
 
 exports.getUserProfileById = async (req, res) => {
   try {

@@ -1,8 +1,9 @@
 const bcrypt = require("bcryptjs");
+const { pool } = require("../db-connection");
 
 class AuthService {
-  constructor(db) {
-    this.db = db;
+  constructor() {
+    this.db = pool;
   }
 
   async verifyPassword(query, values, password) {

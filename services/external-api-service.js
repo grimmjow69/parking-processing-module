@@ -1,16 +1,16 @@
 const axios = require("axios");
 const ParkingSpotService = require("./parking-spot-service");
-const db = require("../db-connection");
-const parkingSpotService = new ParkingSpotService(db);
+const { pool } = require("../db-connection");
+const parkingSpotService = new ParkingSpotService();
 const NotificationService = require("./notification-service");
-const notificationService = new NotificationService(db);
+const notificationService = new NotificationService();
 const { Base64 } = require("js-base64");
 
 const { PPM_AUTH_USERNAME, PPM_AUTH_PASSWORD, PPM_URL } = process.env;
 
 class ExternalApiService {
   constructor() {
-    this.db = db;
+    this.db = pool;
     const base64Auth = Base64.encode(
       `${PPM_AUTH_USERNAME}:${PPM_AUTH_PASSWORD}`
     );

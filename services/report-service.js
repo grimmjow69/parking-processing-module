@@ -1,8 +1,8 @@
-const db = require("../db-connection");
+const { pool } = require("../db-connection");
 
 class ReportService {
-  constructor(db) {
-    this.db = db;
+  constructor() {
+    this.db = pool;
   }
 
   async saveReport(userId, reportMessage, category) {

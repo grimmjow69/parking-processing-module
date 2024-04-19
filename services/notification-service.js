@@ -1,17 +1,17 @@
 const ParkingSpotService = require("../services/parking-spot-service");
 const UserService = require("../services/user-service");
 
-const db = require("../db-connection");
+const { pool } = require("../db-connection");
 
-const parkingSpotService = new ParkingSpotService(db);
-const userService = new UserService(db);
+const parkingSpotService = new ParkingSpotService();
+const userService = new UserService();
 
 const { Expo } = require("expo-server-sdk");
 let expo = new Expo();
 
 class NotificationService {
-  constructor(db) {
-    this.db = db;
+  constructor() {
+    this.db = pool;
   }
 
   async savePushToken(userId, pushToken) {

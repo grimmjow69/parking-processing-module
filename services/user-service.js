@@ -1,9 +1,9 @@
 const bcrypt = require("bcryptjs");
-const db = require("../db-connection");
+const { pool } = require("../db-connection");
 
 class UserService {
-  constructor(db) {
-    this.db = db;
+  constructor() {
+    this.db = pool;
   }
 
   async registerNewUser(userDetail) {

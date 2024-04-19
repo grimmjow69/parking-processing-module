@@ -1,11 +1,11 @@
 const ParkingSpotHistoryService = require("../services/spot-history-service");
-const db = require("../db-connection");
-const parkingSpotHistoryService = new ParkingSpotHistoryService(db);
+const { pool } = require("../db-connection");
+const parkingSpotHistoryService = new ParkingSpotHistoryService();
 const geolib = require("geolib");
 
 class ParkingSpotService {
-  constructor(db) {
-    this.db = db;
+  constructor() {
+    this.db = pool
   }
 
   async getClosestFreeParkingSpot(startLatitude, startLongitude) {

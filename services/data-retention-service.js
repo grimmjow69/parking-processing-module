@@ -1,6 +1,8 @@
+const { pool } = require("../db-connection");
+
 class DataRetentionService {
-  constructor(db) {
-    this.db = db;
+  constructor() {
+    this.db = pool;
   }
 
   async cleanUpParkingHistory() {

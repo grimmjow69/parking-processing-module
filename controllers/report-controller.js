@@ -1,8 +1,8 @@
 const ReportService = require("../services/report-service");
 
-const db = require("../db-connection");
+const { pool } = require("../db-connection");
 
-const reportService = new ReportService(db);
+const reportService = new ReportService();
 
 exports.saveReport = async (req, res) => {
   try {

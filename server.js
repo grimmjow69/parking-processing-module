@@ -4,7 +4,7 @@ dotenv.config();
 const express = require("express");
 const app = express();
 
-const db = require("./db-connection");
+const { pool, initializeDatabase } = require("./db-connection");
 
 const cron = require("node-cron");
 
@@ -21,6 +21,14 @@ const DataRetentionService = require("./services/data-retention-service");
 const basicAuth = require("express-basic-auth");
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+
+initializeDatabase()
+  .then(() => {
+    console.log("Database setup completed");
+  })
+  .catch((err) => {
+    console.error("Failed to initialize database:", err);
+  });
 
 // Middleware
 app.use(express.json());
@@ -97,8 +105,8 @@ app.use(
 );
 
 // Initialize services
-const externalApiService = new ExternalApiService(db);
-const dataRetentionService = new DataRetentionService(db);
+const externalApiService = new ExternalApiService();
+const dataRetentionService = new DataRetentionService();
 
 // Serve Swagger docs
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
@@ -120,8 +128,8 @@ cron.schedule("59 23 * * 6", async () => {
   }
 });
 
-// At every 2nd minute past every hour from 6 through 18 on every day-of-week from Monday through Friday.
-cron.schedule("*/2 6-18 * * 1-5", async () => {
+// At every 1st minute past every hour from 6 through 18 on every day-of-week from Monday through Friday.
+cron.schedule("*/1 6-18 * * 1-5", async () => {
   try {
     await externalApiService.updateParkingSpotsWithNewData();
     console.log("Parking spots updated successfully");

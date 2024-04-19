@@ -1,7 +1,7 @@
 const NotificationService = require("../services/notification-service");
-const db = require("../db-connection");
+const { pool } = require("../db-connection");
 
-const notificationService = new NotificationService(db);
+const notificationService = new NotificationService();
 
 exports.registerPushToken = async (req, res) => {
   try {

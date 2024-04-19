@@ -3,12 +3,12 @@ const ParkingSpotHistoryService = require("../services/spot-history-service");
 const UserService = require("../services/user-service");
 const NotificationService = require("../services/notification-service");
 
-const db = require("../db-connection");
+const { pool } = require("../db-connection");
 
-const parkingSpotService = new ParkingSpotService(db);
-const parkingSpotHistoryService = new ParkingSpotHistoryService(db);
-const userService = new UserService(db);
-const notificationService = new NotificationService(db);
+const parkingSpotService = new ParkingSpotService();
+const parkingSpotHistoryService = new ParkingSpotHistoryService();
+const userService = new UserService();
+const notificationService = new NotificationService();
 
 exports.getClosestFreeParkingSpot = async (req, res) => {
   const { latitude, longitude } = req.body;
