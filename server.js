@@ -128,7 +128,7 @@ cron.schedule("59 23 * * 6", async () => {
   }
 });
 
-// At every 1st minute past every hour from 6 through 18 on every day-of-week from Monday through Friday.
+// At every 2nd minute past every hour from 6 through 18 on every day-of-week from Monday through Friday.
 cron.schedule("*/2 6-18 * * 1-5", async () => {
   try {
     await externalApiService.updateParkingSpotsWithNewData();
@@ -139,6 +139,16 @@ cron.schedule("*/2 6-18 * * 1-5", async () => {
 });
 
 // At every 15th minute past every hour from 18 through 21 on every day-of-week from Monday through Friday.
+cron.schedule("*/15 18-21 * * 1-5", async () => {
+  try {
+    await externalApiService.updateParkingSpotsWithNewData();
+    console.log("Parking spots updated successfully");
+  } catch (error) {
+    console.error(`Error while updating parking spots: ${error.message}`);
+  }
+});
+
+// At every 15th minute past every hour from 5 through 6 on every day-of-week from Monday through Friday.
 cron.schedule("*/15 18-21 * * 1-5", async () => {
   try {
     await externalApiService.updateParkingSpotsWithNewData();

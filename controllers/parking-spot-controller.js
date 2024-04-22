@@ -117,27 +117,6 @@ exports.getAllFreeParkingSpots = async (req, res) => {
   }
 };
 
-exports.getParkingSpotCoordinates = async (req, res) => {
-  const spotId = req.params.spotId;
-  try {
-    const spotCoordinates =
-      await parkingSpotService.getParkingSpotCoordinatesById(spotId);
-    res.status(200).json({
-      operation: "get-spot-coordinates",
-      spotCoordinates: spotCoordinates,
-      success: true,
-    });
-  } catch (error) {
-    console.error(
-      `Error while getting coordinates of parking spot with ID ${spotId}: ${error.message}`
-    );
-    res.status(500).json({
-      operation: "get-spot-coordinates",
-      error: error.message,
-      success: false,
-    });
-  }
-};
 
 exports.getParkingSpotById = async (req, res) => {
   const spotId = req.params.spotId;

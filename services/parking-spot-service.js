@@ -21,10 +21,14 @@ class ParkingSpotService {
         }))
       );
 
-      const closestParkingSpot = await this.getParkingSpotById(
-        closestFreeSpot.key
-      );
-      return closestParkingSpot;
+      if(closestFreeSpot) {
+        const closestParkingSpot = await this.getParkingSpotById(
+          closestFreeSpot.key
+        );
+        return closestParkingSpot;
+      } else {
+        return null;
+      }
     } catch (error) {
       throw new Error(
         `Unable to find closest free parking spot from coordinates (${startLatitude}, ${startLongitude}): ${error.message}`
