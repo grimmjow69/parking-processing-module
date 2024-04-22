@@ -49,10 +49,10 @@ const initializeDatabase = async () => {
         port: process.env.DB_PORT,
       });
 
-      const unizzzClient = await newPool.connect();
+      const pool2 = await newPool.connect();
 
       // Create the sequences
-      await unizzzClient.query(`
+      await pool2.query(`
         CREATE SEQUENCE IF NOT EXISTS parking_spots_parking_spot_id_seq;
         CREATE SEQUENCE IF NOT EXISTS parking_spot_histories_id_seq;
         CREATE SEQUENCE IF NOT EXISTS users_user_id_seq;
@@ -62,7 +62,7 @@ const initializeDatabase = async () => {
       `);
 
       // Create db tables
-      await unizzzClient.query(`
+      await pool2.query(`
         CREATE TABLE IF NOT EXISTS public.parking_spots
         (
           parking_spot_id integer NOT NULL DEFAULT nextval('parking_spots_parking_spot_id_seq'::regclass),
@@ -172,7 +172,7 @@ const initializeDatabase = async () => {
           OWNER to postgres;
       `);
       console.log("Tables created successfully.");
-      unizzzClient.release();
+      pool2.release();
     } else {
       console.log('Database "uniza-parking-system" already exists.');
     }
