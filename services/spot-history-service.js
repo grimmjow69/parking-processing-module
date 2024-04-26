@@ -110,14 +110,14 @@ class ParkingSpotHistoryService {
     try {
       const { rows } = await this.db.query(query, values);
 
-      if (rows.length <= 1) {
+      if (rows.length == 0) {
         return null;
       }
 
       const currentStatus = rows[0].occupied;
       let statusChangeEvent = null;
 
-      for (let i = 1; i < rows.length; i++) {
+      for (let i = 0; i < rows.length; i++) {
         if (rows[i].occupied === currentStatus) {
           statusChangeEvent = rows[i];
         } else {

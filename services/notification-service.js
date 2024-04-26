@@ -73,7 +73,7 @@ class NotificationService {
             const state =
               actualSpotState.occupied !== null
                 ? actualSpotState.occupied
-                : "unified";
+                : "unknown";
 
             messageContent += `${actualSpotState.name} - occupied: ${state}\n`;
           }
