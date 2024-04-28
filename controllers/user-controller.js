@@ -2,8 +2,6 @@ const UserService = require("../services/user-service");
 const AuthService = require("../services/auth-service");
 const NotificationService = require("../services/notification-service");
 
-const { pool } = require("../db-connection");
-
 const userService = new UserService();
 const authService = new AuthService();
 const notificationService = new NotificationService();

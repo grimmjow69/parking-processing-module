@@ -28,30 +28,61 @@ class ParkingSpotHistoryService {
 
   async getHistoryOccupancyCount() {
     const query = `
-      SELECT p.name,
-             COALESCE(COUNT(h.history_id), 0) AS times_occupied,
-             c.longitude,
-             c.latitude
-      FROM public."parking_spots" p
-      LEFT JOIN public."parking_spot_histories" h
-        ON p.parking_spot_id = h.parking_spot_id AND h.occupied = true
+      WITH OccupiedDurations AS (
+        SELECT
+          p.parking_spot_id,
+          p.name,
+          h.occupied,
+          h.updated_at,
+          LEAD(h.updated_at) OVER (PARTITION BY p.parking_spot_id ORDER BY h.updated_at) AS next_update_at
+        FROM public.parking_spots p
+        JOIN public.parking_spot_histories h ON p.parking_spot_id = h.parking_spot_id
+      ),
+      Durations AS (
+        SELECT
+          parking_spot_id,
+          name,
+          occupied,
+          updated_at,
+          next_update_at,
+          -- Extract the duration in hours, only calculate if the spot was occupied and there's a next update time
+          CASE WHEN occupied = true AND next_update_at IS NOT NULL THEN
+            EXTRACT(EPOCH FROM (next_update_at - updated_at)) / 3600
+          ELSE
+            0
+          END AS hours_occupied,
+          EXTRACT(EPOCH FROM (next_update_at - updated_at)) / 3600 AS raw_hours -- Debug information
+        FROM OccupiedDurations
+      )
+      SELECT
+        d.name,
+        SUM(d.hours_occupied) AS total_hours_occupied,
+        c.latitude,
+        c.longitude,
+        ARRAY_AGG(d.raw_hours ORDER BY d.updated_at) AS debug_hours, -- Collect raw durations for debugging
+        ARRAY_AGG(d.updated_at ORDER BY d.updated_at) AS updated_times, -- Collect update times for debugging
+        ARRAY_AGG(d.next_update_at ORDER BY d.updated_at) AS next_update_times -- Collect next update times for debugging
+      FROM Durations d
       LEFT JOIN (
         SELECT
           parking_spot_id,
           (coordinates[0])::float AS latitude,
           (coordinates[1])::float AS longitude
-        FROM public."parking_spot_coordinates"
-      ) c
-        ON p.parking_spot_id = c.parking_spot_id
-      GROUP BY p.name, c.longitude, c.latitude
+        FROM public.parking_spot_coordinates
+      ) c ON d.parking_spot_id = c.parking_spot_id
+      GROUP BY d.name, c.latitude, c.longitude
     `;
 
     try {
       const { rows } = await this.db.query(query);
       const occupancyCountMap = {};
+      const maxHoursOccupied = Math.max(...rows.map(row => row.total_hours_occupied));
+      
       rows.forEach((row) => {
+        const normalizedWeight = (row.total_hours_occupied / maxHoursOccupied) * 255;
+        
         occupancyCountMap[row.name] = {
-          weight: parseInt(row.times_occupied),
+          weight: Math.round(normalizedWeight), 
           longitude: row.longitude,
           latitude: row.latitude,
         };

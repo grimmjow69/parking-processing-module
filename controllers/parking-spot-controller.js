@@ -3,8 +3,6 @@ const ParkingSpotHistoryService = require("../services/spot-history-service");
 const UserService = require("../services/user-service");
 const NotificationService = require("../services/notification-service");
 
-const { pool } = require("../db-connection");
-
 const parkingSpotService = new ParkingSpotService();
 const parkingSpotHistoryService = new ParkingSpotHistoryService();
 const userService = new UserService();

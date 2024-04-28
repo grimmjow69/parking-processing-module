@@ -1,5 +1,4 @@
 const NotificationService = require("../services/notification-service");
-const { pool } = require("../db-connection");
 
 const notificationService = new NotificationService();
 

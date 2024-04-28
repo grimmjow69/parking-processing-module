@@ -1,7 +1,5 @@
 const ParkingSpotHistoryService = require("../services/spot-history-service");
 
-const { pool } = require("../db-connection");
-
 const parkingSpotHistoryService = new ParkingSpotHistoryService();
 
 exports.getParkingSpotHistoryById = async (req, res) => {
